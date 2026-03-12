@@ -1,1 +1,147 @@
-# Harness Engineering - 구현 가이드\n\n이 문서는 Harness Engineering 시스템을 실제 프로젝트에 적용하는 방법을 설명합니다.\n\n## 목차\n\n1. [시스템 개요](#시스템-개요)\n2. [설치 및 설정](#설치-및-설정)\n3. [기본 사용법](#기본-사용법)\n4. [PDCA 워크플로우](#pdca-워크플로우)\n5. [에이전트 시스템](#에이전트-시스템)\n6. [스킬 시스템](#스킬-시스템)\n7. [훅 시스템](#훅-시스템)\n8. [고급 사용법](#고급-사용법)\n\n## 시스템 개요\n\n### 핵심 개념\n\n**Harness Engineering**은 세 가지 오픈소스 프로젝트의 장점을 결합합니다:\n\n| 프로젝트 | 핵심 개념 | 도입 요소 |\n| :--- | :--- | :--- |\n| **bkit** | PDCA 방법론 | 계획-수행-점검-조치 사이클 |\n| **oh-my-openagent** | 멀티 에이전트 오케스트레이션 | 병렬 에이전트 실행 |\n| **superpowers** | TDD 강조 | Red-Green-Refactor 사이클 |\n\n### 아키텍처\n\n```\n┌─────────────────────────────────────────────────────┐\n│                  User Input                         │\n└────────────────────┬────────────────────────────────┘\n                     │\n                     ▼\n        ┌────────────────────────┐\n        │  Intent Detection      │\n        │  (Hook: UserPrompt)    │\n        └────────────┬───────────┘\n                     │\n        ┌────────────▼───────────┐\n        │  Agent Orchestration   │\n        │  (PDCA Cycle)          │\n        └────────────┬───────────┘\n                     │\n        ┌────────────▼───────────────────────┐\n        │                                    │\n        ▼                ▼                   ▼\n    ┌────────┐      ┌────────┐          ┌────────┐\n    │Architect│     │Engineer│          │Guardian│\n    │(Plan)   │     │(Do)    │          │(Check) │\n    └────────┘      └────────┘          └────────┘\n        │                │                   │\n        └────────────────┼───────────────────┘\n                         │\n                         ▼\n                   ┌────────────┐\n                   │ Librarian  │\n                   │ (Act/Docs) │\n                   └────────────┘\n```\n\n## 설치 및 설정\n\n### 1. 저장소 클론\n\n```bash\ngit clone https://github.com/developjik/harness-engineering.git\ncd harness-engineering\n```\n\n### 2. 의존성 설치\n\n```bash\nnpm install\n```\n\n### 3. 환경 설정\n\n```bash\n# .env 파일 생성\ncp .env.example .env\n\n# API 키 설정\necho \"OPENAI_API_KEY=your_key_here\" >> .env\necho \"CLAUDE_API_KEY=your_key_here\" >> .env\n```\n\n## 기본 사용법\n\n### 1단계: PDCA 세션 시작\n\n```bash\nnpm run pdca:start\n```\n\n프로젝트 설명을 입력하면 새로운 PDCA 세션이 시작됩니다:\n\n```\n📝 프로젝트 설명을 입력하세요: 사용자 인증 기능이 있는 웹 애플리케이션\n\n✅ PDCA 세션이 시작되었습니다!\n\nSession ID: 550e8400-e29b-41d4-a716-446655440000\nUser Intent: 사용자 인증 기능이 있는 웹 애플리케이션\nCurrent Phase: plan\nPDCA Cycle: 1\n```\n\n### 2단계: 자동 워크플로우 실행\n\n```bash\nnpm run ultrawork\n```\n\n이 명령어는 모든 에이전트를 자동으로 순차 실행합니다:\n\n1. **Architect**: 요구사항 분석 및 설계 문서 작성\n2. **Engineer**: 코드 구현 및 TDD 수행\n3. **Guardian**: 코드 리뷰 및 품질 점검\n4. **Librarian**: 문서화 및 개선\n\n### 3단계: 결과 확인\n\n```bash\n# 세션 상태 확인\nnpm run pdca:status -- <session-id>\n\n# 모든 세션 목록\nnpm run state:list\n```\n\n## PDCA 워크플로우\n\n### Plan (계획) - Architect 에이전트\n\n**목표**: 요구사항을 분석하고 설계 문서 작성\n\n```bash\nnpm run agent:architect\n```\n\n**산출물**:\n- 요구사항 정리\n- 아키텍처 다이어그램\n- 기술 스택 선택 이유\n- 구현 단계별 계획\n\n**예제 출력**:\n```\n✅ 요구사항 분석 완료\n- 사용자 인증 기능\n- 역할 기반 접근 제어 (RBAC)\n- OAuth 2.0 지원\n\n🎯 추천 설계\nNode.js + Express + PostgreSQL + JWT\n\n📋 설계 문서\n[마크다운 형식의 상세 문서]\n```\n\n### Do (수행) - Engineer 에이전트\n\n**목표**: 설계 문서를 기반으로 코드 구현\n\n```bash\nnpm run agent:engineer\n```\n\n**프로세스**:\n1. RED: 실패하는 테스트 작성\n2. GREEN: 최소한의 코드로 테스트 통과\n3. REFACTOR: 코드 개선\n4. 커밋 및 다음 기능으로 진행\n\n**진행 상황 보고**:\n```\n📊 구현 진행률: [3/10 tasks completed] (30%)\n\n✅ 완료된 작업:\n- User model 구현\n- Authentication endpoints 구현\n- JWT token management 구현\n\n🔄 현재 작업:\n- Password hashing 구현\n```\n\n### Check (점검) - Guardian 에이전트\n\n**목표**: 코드 품질 검증 및 리뷰\n\n```bash\nnpm run agent:guardian\n```\n\n**검증 항목**:\n- 기능 정확성 (설계 문서 준수)\n- 코드 품질 (SOLID 원칙)\n- 보안 (취약점 검사)\n- 성능 (최적화 기회)\n- 테스트 (커버리지 확인)\n\n**리뷰 결과**:\n```\n✅ 승인: 모든 기준 충족\n\n평가:\n- 기능 정확성: ✅ 완벽\n- 코드 품질: ✅ 우수\n- 보안: ⚠️ 경미한 개선 필요\n- 성능: ✅ 최적화됨\n- 테스트: ✅ 커버리지 85%\n```\n\n### Act (조치) - Librarian 에이전트\n\n**목표**: 개발 과정 문서화 및 지식 관리\n\n```bash\nnpm run agent:librarian\n```\n\n**산출물**:\n- API 문서\n- 아키텍처 결정 기록 (ADR)\n- 문제 해결 가이드\n- 사용 예제\n- 주요 학습 사항\n\n## 에이전트 시스템\n\n### 에이전트 구성\n\n각 에이전트는 JSON 설정 파일로 정의됩니다:\n\n```json\n{\n  \"id\": \"architect\",\n  \"name\": \"Architect (Prometheus)\",\n  \"role\": \"요구사항 분석 및 설계 문서 작성\",\n  \"model\": \"claude-opus-4-6\",\n  \"skills\": [\"brainstorming\", \"requirement-analysis\"],\n  \"temperature\": 0.7,\n  \"max_iterations\": 3\n}\n```\n\n### 에이전트 커스터마이징\n\n새로운 에이전트 추가:\n\n```bash\n# 1. 에이전트 설정 파일 생성\ncat > .harness/agents/custom-agent.json << EOF\n{\n  \"id\": \"custom-agent\",\n  \"name\": \"Custom Agent\",\n  \"role\": \"Custom role\",\n  \"model\": \"claude-opus-4-6\",\n  \"skills\": [\"skill1\", \"skill2\"],\n  \"temperature\": 0.7\n}\nEOF\n\n# 2. 프롬프트 템플릿 생성\ncat > .harness/templates/custom-agent-prompt.md << EOF\n# Custom Agent Prompt\n\n당신은 Custom Agent입니다.\n...\nEOF\n```\n\n## 스킬 시스템\n\n### 기본 스킬\n\n- `brainstorming`: 요구사항 정제 및 설계 아이디어 도출\n- `test-driven-development`: RED-GREEN-REFACTOR 사이클\n- `code-review`: 체계적인 코드 리뷰\n- `documentation`: 자동 문서화 생성\n\n### 스킬 추가\n\n```bash\n# 1. 스킬 디렉토리 생성\nmkdir -p .harness/skills/my-skill\n\n# 2. SKILL.md 작성\ncat > .harness/skills/my-skill/SKILL.md << EOF\n# My Skill\n\n## 개요\n...\nEOF\n\n# 3. 에이전트에 스킬 추가\n# .harness/agents/architect.json의 skills 배열에 추가\n```\n\n## 훅 시스템\n\n### 훅 종류\n\n| 훅 | 트리거 | 용도 |\n| :--- | :--- | :--- |\n| `SessionStart` | 세션 시작 | 초기화 및 상태 복구 |\n| `UserPromptSubmit` | 사용자 입력 | 인텐트 감지 및 라우팅 |\n| `PreToolUse` | 도구 실행 전 | 검증 및 컨텍스트 준비 |\n| `PostToolUse` | 도구 실행 후 | 결과 처리 및 상태 업데이트 |\n| `PhaseTransition` | 단계 전환 | 단계 검증 및 초기화 |\n| `SessionEnd` | 세션 종료 | 정리 및 저장 |\n\n### 훅 커스터마이징\n\n```javascript\n// .harness/hooks/custom-hook.js\nexport function execute(context) {\n  console.log('Custom hook executed');\n  console.log('Context:', context);\n  \n  // 커스텀 로직\n  return {\n    status: 'success',\n    result: 'Custom result'\n  };\n}\n```\n\n## 고급 사용법\n\n### 1. 병렬 에이전트 실행\n\n```bash\n# 여러 에이전트를 동시에 실행\nPromise.all([\n  runAgent('engineer'),\n  runAgent('librarian')\n]).then(() => console.log('All agents completed'));\n```\n\n### 2. 커스텀 PDCA 사이클\n\n```javascript\nconst stateManager = new PDCAStateManager();\nconst session = stateManager.startSession('Custom project');\n\n// 커스텀 단계 추가\nsession.context.custom_phase = 'value';\nstateManager.saveSession(session);\n```\n\n### 3. 상태 모니터링\n\n```bash\n# 실시간 상태 모니터링\nwatch -n 1 'npm run pdca:status -- <session-id>'\n```\n\n## 문제 해결\n\n### Q: \"Session not found\" 에러\n\n**A**: 먼저 PDCA 세션을 시작하세요:\n```bash\nnpm run pdca:start\n```\n\n### Q: 에이전트가 응답하지 않음\n\n**A**: API 키 설정을 확인하세요:\n```bash\necho $OPENAI_API_KEY\necho $CLAUDE_API_KEY\n```\n\n### Q: 테스트 커버리지가 낮음\n\n**A**: Engineer 에이전트가 TDD를 준수하도록 설정을 확인하세요:\n```bash\n# .harness/agents/engineer.json\n\"temperature\": 0.3  # 낮을수록 더 엄격함\n```\n\n## 참고 자료\n\n- [DESIGN.md](../DESIGN.md) - 시스템 아키텍처\n- [README.md](../README.md) - 프로젝트 개요\n- [bkit-claude-code](https://github.com/popup-studio-ai/bkit-claude-code)\n- [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)\n- [superpowers](https://github.com/obra/superpowers)\n"
+# Harness Engineering 구현 가이드
+
+이 문서는 현재 저장소를 "실행형 앱"이 아니라 "Claude Code 플러그인 리소스 번들"로 보고, 구조를 이해하고 직접 수정하거나 확장하는 방법을 설명합니다.
+
+## 1. 구현 범위
+
+현재 저장소에 실제로 구현된 것은 다음과 같습니다.
+
+- `.claude-plugin/plugin.json`: 플러그인 메타데이터와 에이전트/스킬/훅 등록
+- `agents/*.md`: 역할별 에이전트 프롬프트
+- `skills/*/SKILL.md`: 재사용 가능한 작업 지침
+- `hooks.json`: Claude Code 훅 이벤트와 스크립트 연결
+- `hooks/*.sh`: 세션 로깅, 상태 추적, 백업, 변경 추적, 명령 차단
+
+현재 저장소에 없는 것은 다음과 같습니다.
+
+- `package.json` 기반 실행기
+- `npm run ...` 형태의 워크플로우 명령
+- 별도 세션 관리자나 데이터베이스
+- 자동 PDCA 단계 전환 엔진
+- `ultrawork` 같은 통합 실행 명령
+
+## 2. 핵심 파일
+
+### 플러그인 매니페스트
+
+`.claude-plugin/plugin.json`은 플러그인의 진입점입니다.
+
+- 플러그인 이름, 버전, 설명, 키워드 정의
+- `skills` 배열에 스킬 경로 등록
+- `agents` 배열에 에이전트 경로 등록
+- `hooks.path`로 `hooks.json` 연결
+
+새 에이전트나 스킬을 추가했다면 이 파일도 함께 업데이트해야 합니다.
+
+### 에이전트
+
+`agents/` 디렉터리의 각 Markdown 파일은 YAML 프런트매터와 본문 지침으로 구성됩니다.
+
+- 프런트매터: `name`, `description`, `tools`, `model`, `color`
+- 본문: 역할, 체크리스트, 출력 형식, 작업 원칙
+
+현재 정의된 에이전트는 모두 "프롬프트 지침"이며, 별도 실행기 없이 Claude Code가 직접 읽어 사용합니다.
+
+### 스킬
+
+`skills/*/SKILL.md`는 특정 작업 유형을 위한 세부 절차를 담습니다.
+
+- `brainstorm`: 요구사항 정제와 설계 옵션 도출
+- `implement`: TDD 기반 구현
+- `review`: 리뷰 기준과 피드백 형식
+- `document`: README 및 개발자 문서 작성 기준
+
+### 훅
+
+`hooks.json`은 Claude Code 이벤트를 Bash 스크립트와 연결합니다.
+
+| 이벤트 | 구현 목적 |
+| :--- | :--- |
+| `SessionStart` | 세션 시작 로그 기록 |
+| `UserPromptSubmit` | 입력 길이 기록 |
+| `PreToolUse` | 위험한 Bash 차단, 편집 전 백업 |
+| `PostToolUse` | Bash/편집 후 로깅 및 변경 추적 |
+| `SubagentStart` | 현재 에이전트와 PDCA 단계 기록 |
+| `SubagentStop` | 에이전트 종료 기록 |
+| `SessionEnd` | 세션 종료 기록 |
+
+## 3. 훅 스크립트 상세
+
+### 워크스페이스에 기록하는 훅
+
+- `setup.sh`
+- `validate-input.sh`
+- `on-architect-start.sh`
+- `on-engineer-start.sh`
+- `on-guardian-start.sh`
+- `on-librarian-start.sh`
+- 각 `on-*-stop.sh`
+- `cleanup.sh`
+
+이 스크립트들은 저장소 루트 기준 `logs/`와 `state/`를 사용합니다.
+
+### 홈 디렉터리에 기록하는 훅
+
+- `pre-bash.sh`
+- `pre-edit.sh`
+- `post-bash.sh`
+- `post-edit.sh`
+
+이 스크립트들은 `~/.harness-engineering/` 아래에 로그, 백업, 변경 추적 파일을 저장합니다.
+
+## 4. 의존성
+
+저장소 자체에는 패키지 매니저 의존성이 없지만, 훅은 몇 가지 CLI 도구를 기대합니다.
+
+| 도구 | 용도 | 필수성 |
+| :--- | :--- | :--- |
+| `bash` | 모든 훅 실행 | 높음 |
+| `jq` | 훅 입력 JSON 파싱 | 높음 |
+| `git` | 현재 브랜치 로깅 | 선택 |
+| `md5sum` 또는 `md5` | 파일 해시 계산 | 중간 |
+| `eslint` | JS/TS 린트 | 선택 |
+| `pylint` | Python 린트 | 선택 |
+| `markdownlint` | Markdown 검사 | 선택 |
+
+## 5. 확장 방법
+
+### 에이전트 추가
+
+1. `agents/new-agent.md` 생성
+2. YAML 프런트매터와 역할 지침 작성
+3. `.claude-plugin/plugin.json`의 `agents` 배열에 등록
+4. 필요하면 `hooks.json`에 `SubagentStart`, `SubagentStop` 연결 추가
+
+### 스킬 추가
+
+1. `skills/new-skill/SKILL.md` 생성
+2. 사용 가능한 도구와 체크리스트 작성
+3. `.claude-plugin/plugin.json`의 `skills` 배열에 등록
+
+### 훅 추가
+
+1. `hooks/your-hook.sh` 생성
+2. 실행 권한을 부여합니다.
+3. `hooks.json`에 이벤트와 matcher를 연결합니다.
+4. 로그 위치와 필요한 환경 변수를 문서에 반영합니다.
+
+## 6. 현재 제약 사항
+
+- 훅은 자동 오케스트레이션이 아니라 보조 자동화에 가깝습니다.
+- 세션 상태가 워크스페이스와 홈 디렉터리로 나뉘어 저장됩니다.
+- 린트 도구가 없으면 `post-edit.sh`는 검사를 건너뜁니다.
+- 에이전트와 스킬은 풍부한 지침을 제공하지만, 실제 코드 생성 품질은 Claude Code 환경과 사용자 입력 품질의 영향을 받습니다.
+
+## 7. 추천 개선 순서
+
+1. 로그/상태 저장 위치를 한 곳으로 통일합니다.
+2. 훅 입력 포맷을 문서화한 샘플 페이로드를 추가합니다.
+3. 자동 단계 전환이 필요하다면 별도 오케스트레이터 스크립트를 설계합니다.
+4. 에이전트와 스킬 간 연결 규칙을 더 명확히 정의합니다.
+
+## 8. 함께 보면 좋은 문서
+
+- [README.md](../README.md)
+- [../CLAUDE_CODE_PLUGIN_GUIDE.md](../CLAUDE_CODE_PLUGIN_GUIDE.md)
+- [PROJECT_ANALYSIS.md](./PROJECT_ANALYSIS.md)
+- [../DESIGN.md](../DESIGN.md)

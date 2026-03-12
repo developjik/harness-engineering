@@ -18,6 +18,22 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
 }
 
+compute_file_hash() {
+    local file="$1"
+
+    if command -v md5sum &> /dev/null; then
+        md5sum "$file" | awk '{print $1}'
+        return 0
+    fi
+
+    if command -v md5 &> /dev/null; then
+        md5 -q "$file"
+        return 0
+    fi
+
+    return 1
+}
+
 # 파일 변경 추적
 track_changes() {
     local file="$1"
@@ -26,12 +42,13 @@ track_changes() {
         return 0
     fi
     
-    # 파일 해시 계산
-    local file_hash=$(md5sum "$file" | awk '{print $1}')
-    
-    # 변경 사항 기록
-    echo "$file|$file_hash|$(date +%Y-%m-%d\ %H:%M:%S)" >> "$CHANGES_FILE"
-    log_message "File tracked: $file (hash: $file_hash)"
+    local file_hash
+    if file_hash=$(compute_file_hash "$file"); then
+        echo "$file|$file_hash|$(date +%Y-%m-%d\ %H:%M:%S)" >> "$CHANGES_FILE"
+        log_message "File tracked: $file (hash: $file_hash)"
+    else
+        log_message "No md5 utility available; skipping hash tracking for: $file"
+    fi
 }
 
 # 린트 검사 (JavaScript/TypeScript)

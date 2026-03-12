@@ -1,1 +1,107 @@
-# Claude Code Plugin - Harness Engineering\n\n**AI-native 소프트웨어 개발을 위한 PDCA 기반 통합 하네스 플러그인**\n\n---\n\n## 🚀 빠른 시작\n\n### 1단계: 플러그인 설치\n\nClaude Code에서 플러그인을 설치합니다:\n\n```bash\n# Claude Code에서 플러그인 검색\n/plugin install harness-engineering\n\n# 또는 GitHub에서 직접 설치\n/plugin install https://github.com/developjik/harness-engineering\n```\n\n### 2단계: 플러그인 활성화\n\n```bash\n# 플러그인 활성화\n/plugin enable harness-engineering\n```\n\n### 3단계: 새 프로젝트 시작\n\n```bash\n# Architect 에이전트 활성화 (기본 설정)\n/architect\n\n# 프로젝트 설명 입력\n\"사용자 인증 기능이 있는 웹 애플리케이션\"\n```\n\n---\n\n## 📋 플러그인 구조\n\n```\nharness-engineering/\n├── .claude-plugin/\n│   └── plugin.json              # 플러그인 매니페스트\n├── skills/                      # Agent Skills (Claude가 자동으로 사용)\n│   ├── brainstorm/SKILL.md      # 요구사항 분석 및 설계\n│   ├── implement/SKILL.md       # TDD 기반 구현\n│   ├── review/SKILL.md          # 코드 리뷰 및 검증\n│   └── document/SKILL.md        # 문서화 및 지식 관리\n├── agents/                      # Custom Agents (사용자가 선택)\n│   ├── architect.md             # 설계 담당 (Prometheus)\n│   ├── engineer.md              # 구현 담당 (Hephaestus)\n│   ├── guardian.md              # 검증 담당 (Oracle)\n│   └── librarian.md             # 문서화 담당 (Keeper)\n├── hooks/                       # Event Handlers\n│   ├── setup.sh\n│   ├── validate-input.sh\n│   └── ...\n├── hooks.json                   # 생명주기 자동화 설정\n├── logs/                        # 런타임 세션 로그\n└── state/                       # 런타임 에이전트 상태\n```\n\n---\n\n## 🎯 PDCA 워크플로우\n\n### 전체 흐름\n\n```\n사용자 입력\n    ↓\n[Plan] Architect 에이전트\n    ↓ (설계 문서)\n[Do] Engineer 에이전트\n    ↓ (구현 코드)\n[Check] Guardian 에이전트\n    ↓ (리뷰 결과)\n[Act] Librarian 에이전트\n    ↓ (문서화)\n완료!\n```\n\n### 각 단계별 설명\n\n#### 1️⃣ Plan (계획) - Architect 에이전트\n\n**역할**: 요구사항 분석 및 기술적 설계\n\n```bash\n/architect\n```\n\n**산출물**:\n- 요구사항 정리\n- 아키텍처 다이어그램\n- 기술 스택 선택 이유\n- 구현 단계별 계획\n\n**예제**:\n```\n사용자: \"사용자 인증 기능이 있는 웹 애플리케이션\"\n\nArchitect:\n✅ 요구사항 분석 완료\n- JWT 기반 인증\n- 역할 기반 접근 제어 (RBAC)\n- OAuth 2.0 지원\n\n🎯 추천 설계\nNode.js + Express + PostgreSQL + JWT\n\n📋 설계 문서\n[상세 설계 문서...]\n```\n\n#### 2️⃣ Do (수행) - Engineer 에이전트\n\n**역할**: 설계 문서를 기반으로 코드 구현\n\n```bash\n/engineer\n```\n\n**프로세스**: RED-GREEN-REFACTOR 사이클\n\n1. RED: 실패하는 테스트 작성\n2. GREEN: 최소한의 코드로 테스트 통과\n3. REFACTOR: 코드 개선\n4. 커밋 및 다음 기능으로 진행\n\n**산출물**:\n- 테스트 코드\n- 구현 코드\n- 커밋 이력\n\n#### 3️⃣ Check (점검) - Guardian 에이전트\n\n**역할**: 코드 품질 검증 및 리뷰\n\n```bash\n/guardian\n```\n\n**검증 항목**:\n- 기능 정확성 (설계 문서 준수)\n- 코드 품질 (SOLID 원칙)\n- 보안 (취약점 검사)\n- 성능 (최적화 기회)\n- 테스트 (커버리지 확인)\n\n**산출물**:\n- 리뷰 의견\n- 개선 사항\n- 승인/조건부 승인/반려\n\n#### 4️⃣ Act (조치) - Librarian 에이전트\n\n**역할**: 개발 과정 문서화 및 지식 관리\n\n```bash\n/librarian\n```\n\n**산출물**:\n- API 문서\n- 아키텍처 결정 기록 (ADR)\n- 설치 및 실행 가이드\n- 사용 예제\n- 문제 해결 가이드\n\n---\n\n## 🛠️ 에이전트 사용법\n\n### Architect (설계)\n\n```bash\n/architect\n```\n\n**사용 시나리오**:\n- 새로운 프로젝트 시작\n- 새로운 기능 설계\n- 기술 스택 선택\n\n**입력**: 프로젝트 설명\n\n**출력**: 설계 문서\n\n### Engineer (구현)\n\n```bash\n/engineer\n```\n\n**사용 시나리오**:\n- 설계 문서 기반 코드 구현\n- TDD 기반 개발\n- 기능 추가\n\n**입력**: 설계 문서\n\n**출력**: 구현 코드, 테스트 코드\n\n### Guardian (리뷰)\n\n```bash\n/guardian\n```\n\n**사용 시나리오**:\n- 코드 품질 검증\n- 보안 검사\n- 성능 분석\n\n**입력**: 구현 코드\n\n**출력**: 리뷰 의견, 개선 사항\n\n### Librarian (문서화)\n\n```bash\n/librarian\n```\n\n**사용 시나리오**:\n- API 문서화\n- 개발자 가이드 작성\n- 문제 해결 가이드\n\n**입력**: 최종 코드, 리뷰 결과\n\n**출력**: 문서화\n\n---\n\n## 🎓 Skills 설명\n\n### 1. Brainstorm Skill\n\n**목표**: 요구사항 분석 및 설계 아이디어 도출\n\n**사용 시기**: 새로운 프로젝트나 기능을 시작할 때\n\n**프로세스**:\n1. 요구사항 정제\n2. 아이디어 도출 (3가지 옵션)\n3. 평가 및 선택\n4. 설계 문서 작성\n\n### 2. Implement Skill\n\n**목표**: TDD 기반 코드 구현\n\n**사용 시기**: 설계 문서가 완성되었을 때\n\n**프로세스**:\n1. RED: 실패하는 테스트 작성\n2. GREEN: 최소한의 코드로 테스트 통과\n3. REFACTOR: 코드 개선\n4. 커밋\n\n### 3. Review Skill\n\n**목표**: 코드 품질 검증\n\n**사용 시기**: 구현이 완료되었을 때\n\n**검증 항목**:\n- 기능 정확성\n- 코드 품질\n- 보안\n- 성능\n- 테스트\n\n### 4. Document Skill\n\n**목표**: 개발 과정 문서화\n\n**사용 시기**: 코드 리뷰가 완료되었을 때\n\n**산출물**:\n- API 문서\n- ADR (아키텍처 결정 기록)\n- 설치 및 실행 가이드\n- 사용 예제\n- 문제 해결 가이드\n\n---\n\n## 🔄 자동화 (Hooks)\n\n플러그인은 다음 이벤트에서 자동으로 다음 단계로 진행합니다:\n\n| 이벤트 | 트리거 | 다음 단계 |\n| :--- | :--- | :--- |\n| `on-project-start` | 프로젝트 시작 | Architect 활성화 |\n| `on-design-complete` | 설계 완료 | Engineer 활성화 |\n| `on-implementation-complete` | 구현 완료 | Guardian 활성화 |\n| `on-review-complete` | 리뷰 완료 | Librarian 활성화 |\n| `on-documentation-complete` | 문서화 완료 | PDCA 사이클 완료 |\n\n---\n\n## 📚 예제\n\n### 예제 1: 간단한 API 서버\n\n```bash\n# 1단계: Architect 활성화\n/architect\n\n# 입력\n사용자: \"할일 목록 관리 API 서버를 만들고 싶습니다\"\n\n# Architect가 설계 문서 작성\n\n# 2단계: Engineer 활성화\n/engineer\n\n# Engineer가 TDD 기반으로 구현\n\n# 3단계: Guardian 활성화\n/guardian\n\n# Guardian이 코드 리뷰 수행\n\n# 4단계: Librarian 활성화\n/librarian\n\n# Librarian이 문서화\n```\n\n### 예제 2: 기존 프로젝트에 기능 추가\n\n```bash\n# 새로운 기능 추가\n/architect\n\n# 입력\n사용자: \"기존 API에 사용자 인증 기능을 추가하고 싶습니다\"\n\n# 나머지 단계는 동일\n```\n\n---\n\n## ⚙️ 설정\n\n### 기본 에이전트 변경\n\n`settings.json`에서 기본 에이전트를 변경할 수 있습니다:\n\n```json\n{\n  \"agent\": \"engineer\"\n}\n```\n\n**가능한 값**:\n- `architect` (기본값)\n- `engineer`\n- `guardian`\n- `librarian`\n\n---\n\n## 🐛 문제 해결\n\n### Q: 플러그인이 설치되지 않음\n\n**A**: Claude Code 버전을 확인하세요:\n```bash\nclaude --version\n```\n\n버전이 1.0.33 이상이어야 합니다.\n\n### Q: 에이전트가 응답하지 않음\n\n**A**: 플러그인이 활성화되었는지 확인하세요:\n```bash\n/plugin list\n```\n\n### Q: Skill이 작동하지 않음\n\n**A**: 플러그인을 다시 로드하세요:\n```bash\n/reload-plugins\n```\n\n---\n\n## 📖 추가 리소스\n\n- **GitHub**: https://github.com/developjik/harness-engineering\n- **설계 문서**: [DESIGN.md](./DESIGN.md)\n- **구현 가이드**: [docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md)\n- **Claude Code 문서**: https://code.claude.com/docs/en/plugins\n\n---\n\n## 🤝 기여\n\n이슈 및 풀 리퀘스트는 언제든 환영합니다!\n\n---\n\n## 📝 라이선스\n\nMIT License\n\n---\n\n**Made with ❤️ for AI-native development**\n"
+# Harness Engineering Plugin Guide
+
+Harness Engineering는 Claude Code 안에서 PDCA 기반 개발 흐름을 운영하기 위한 플러그인 리소스 모음입니다. 현재 저장소는 에이전트, 스킬, 훅을 제공하며, 별도의 앱 서버나 npm 실행 명령은 포함하지 않습니다.
+
+## 설치
+
+```bash
+/plugin install https://github.com/developjik/harness-engineering
+/plugin enable harness-engineering
+```
+
+플러그인 설치 후 Claude Code를 다시 열거나 플러그인을 다시 로드하면 에이전트와 훅이 반영됩니다.
+
+## 시작 방법
+
+가장 단순한 시작 방법은 `architect`부터 수동으로 진행하는 것입니다.
+
+```text
+/architect
+요구사항 설명
+/engineer
+설계 문서 기준 구현
+/guardian
+리뷰 요청
+/librarian
+문서 정리 요청
+```
+
+현재 구현은 단계 자동 전환을 하지 않으므로, 다음 단계로 넘어갈 때는 사용자가 직접 적절한 에이전트를 선택해야 합니다.
+
+## 에이전트
+
+| Agent | 역할 | 파일 |
+| :--- | :--- | :--- |
+| `architect` | 요구사항 분석, 옵션 비교, 설계 문서 작성 | `agents/architect.md` |
+| `engineer` | TDD 기반 구현, 리팩터링, 진행 보고 | `agents/engineer.md` |
+| `guardian` | 기능/품질/보안/성능 리뷰 | `agents/guardian.md` |
+| `librarian` | 사용자/개발자 문서 정리 | `agents/librarian.md` |
+
+## 스킬
+
+| Skill | 목적 | 파일 |
+| :--- | :--- | :--- |
+| `brainstorm` | 요구사항 정제와 설계 초안 도출 | `skills/brainstorm/SKILL.md` |
+| `implement` | RED-GREEN-REFACTOR 기반 구현 | `skills/implement/SKILL.md` |
+| `review` | 코드 품질과 보안 검토 | `skills/review/SKILL.md` |
+| `document` | README, 가이드, 운영 문서 작성 | `skills/document/SKILL.md` |
+
+스킬은 매니페스트에도 등록되어 있으며, Claude Code가 컨텍스트에 맞게 활용할 수 있습니다.
+
+## 훅 동작
+
+### 세션 및 에이전트 추적
+
+- `hooks/setup.sh`: 세션 시작 시 `logs/session.log`를 만들고 Git 브랜치를 기록합니다.
+- `hooks/on-*-start.sh`: 활성 에이전트를 `state/current-agent.txt`에 기록하고 PDCA 단계 로그를 남깁니다.
+- `hooks/on-*-stop.sh`: 에이전트 종료 로그를 남깁니다.
+- `hooks/cleanup.sh`: 세션 종료 로그를 남깁니다.
+
+### 안전 장치와 편집 보조
+
+- `hooks/pre-bash.sh`: 위험한 명령과 `sudo` 사용을 차단합니다.
+- `hooks/pre-edit.sh`: 편집 전 백업을 `~/.harness-engineering/backups/`에 생성합니다.
+- `hooks/post-edit.sh`: 변경 파일 해시를 기록하고 가능하면 `eslint`, `pylint`, `markdownlint`를 실행합니다.
+- `hooks/post-bash.sh`: Bash 훅 페이로드를 `~/.harness-engineering/logs/`에 저장합니다.
+
+## 필요 도구
+
+- `jq`: 입력 JSON 파싱
+- `bash`: 모든 훅 스크립트 실행
+- `md5sum` 또는 `md5`: 편집 후 파일 해시 계산
+- `git`: 세션 시작 시 브랜치 로그 기록
+- 선택 사항: `eslint`, `pylint`, `markdownlint`
+
+## 로그와 상태 파일
+
+| 위치 | 용도 |
+| :--- | :--- |
+| `logs/session.log` | 세션 시작/종료, 프롬프트 제출, 에이전트 전환 로그 |
+| `state/current-agent.txt` | 마지막으로 시작한 에이전트 |
+| `~/.harness-engineering/backups/` | 편집 전 파일 백업 |
+| `~/.harness-engineering/logs/` | `pre-bash`, `post-bash`, `post-edit` 로그 |
+| `~/.harness-engineering/state/changes.txt` | 편집 후 변경 파일 해시 기록 |
+
+## 문제 해결
+
+### 에이전트가 보이지 않는 경우
+
+- 플러그인이 활성화되어 있는지 확인합니다.
+- Claude Code를 재시작하거나 플러그인을 다시 로드합니다.
+
+### 훅이 조용히 실패하는 경우
+
+- `jq` 설치 여부를 먼저 확인합니다.
+- Bash 관련 로그는 `~/.harness-engineering/logs/`에서 확인합니다.
+- 세션/에이전트 로그는 워크스페이스의 `logs/session.log`에서 확인합니다.
+
+### 편집 후 해시 추적이 되지 않는 경우
+
+- `md5sum` 또는 `md5`가 사용 가능한지 확인합니다.
+- `~/.harness-engineering/state/changes.txt` 생성 여부를 확인합니다.
+
+## 관련 문서
+
+- [README.md](./README.md)
+- [docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md)
+- [docs/PROJECT_ANALYSIS.md](./docs/PROJECT_ANALYSIS.md)
