@@ -117,6 +117,7 @@ harness-engineering/
 - [CLAUDE_CODE_PLUGIN_GUIDE.md](./CLAUDE_CODE_PLUGIN_GUIDE.md): 플러그인 사용 가이드
 - [docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md): 구현/적용 가이드
 - [docs/PDCA_WORKFLOW_DIAGRAM.md](./docs/PDCA_WORKFLOW_DIAGRAM.md): PDCA 다이어그램
+- [docs/REFERENCES.md](./docs/REFERENCES.md): 외부 참고 레포지토리와 공식 문서 목록
 
 ## 참고 프로젝트
 
