@@ -1,0 +1,109 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": ".claude/hooks/setup.sh"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": ".claude/hooks/validate-input.sh"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-edit.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "architect",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-architect-start.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "engineer",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-engineer-start.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "guardian",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-guardian-start.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "librarian",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-librarian-start.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "architect",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-architect-stop.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "engineer",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-engineer-stop.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "guardian",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-guardian-stop.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "librarian",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-librarian-stop.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "type": "command",
+        "command": ".claude/hooks/cleanup.sh"
+      }
+    ]
+  }
+}

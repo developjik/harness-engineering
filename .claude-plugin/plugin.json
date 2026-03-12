@@ -1,1 +1,67 @@
-{\n  "name": "harness-engineering",\n  "description": "AI-native 소프트웨어 개발을 위한 PDCA 기반 통합 하네스 시스템. Architect, Engineer, Guardian, Librarian 에이전트가 협업하여 설계부터 문서화까지 자동화합니다.",\n  "version": "1.0.0",\n  "author": {\n    "name": "developjik"\n  },\n  "homepage": "https://github.com/developjik/harness-engineering",\n  "repository": "https://github.com/developjik/harness-engineering",\n  "license": "MIT",\n  "keywords": [\n    "ai",\n    "pdca",\n    "agent",\n    "engineering",\n    "development",\n    "tdd",\n    "code-review",\n    "documentation"\n  ]\n}\n"
+{
+  "name": "harness-engineering",
+  "version": "1.0.0",
+  "displayName": "AI Harness Engineering",
+  "description": "PDCA 기반 AI 소프트웨어 개발 자동화 플러그인. 설계, 구현, 검증, 문서화의 완전한 워크플로우를 제공합니다.",
+  "author": "developjik",
+  "license": "MIT",
+  "homepage": "https://github.com/developjik/harness-engineering",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/developjik/harness-engineering.git"
+  },
+  "keywords": [
+    "ai",
+    "harness",
+    "engineering",
+    "pdca",
+    "automation",
+    "development",
+    "tdd",
+    "code-review",
+    "documentation"
+  ],
+  "skills": [
+    {
+      "name": "brainstorm",
+      "path": ".claude/skills/brainstorm"
+    },
+    {
+      "name": "implement",
+      "path": ".claude/skills/implement"
+    },
+    {
+      "name": "review",
+      "path": ".claude/skills/review"
+    },
+    {
+      "name": "document",
+      "path": ".claude/skills/document"
+    }
+  ],
+  "agents": [
+    {
+      "name": "architect",
+      "path": ".claude/agents/architect.md",
+      "description": "소프트웨어 아키텍처 설계 전문가"
+    },
+    {
+      "name": "engineer",
+      "path": ".claude/agents/engineer.md",
+      "description": "소프트웨어 엔지니어"
+    },
+    {
+      "name": "guardian",
+      "path": ".claude/agents/guardian.md",
+      "description": "코드 리뷰 전문가"
+    },
+    {
+      "name": "librarian",
+      "path": ".claude/agents/librarian.md",
+      "description": "기술 문서 작성 전문가"
+    }
+  ],
+  "hooks": {
+    "path": ".claude/hooks.json"
+  }
+}
