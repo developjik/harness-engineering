@@ -3,7 +3,8 @@
 # PostToolUse Hook (Write|Edit)
 # 파일 수정 후 실행되는 스크립트
 
-LOG_FILE=".claude/logs/session.log"
+LOG_FILE="logs/session.log"
+mkdir -p logs
 
 # 입력 데이터 읽기
 INPUT=$(cat)

@@ -3,7 +3,8 @@
 # UserPromptSubmit Hook
 # 사용자 입력 검증 스크립트
 
-LOG_FILE=".claude/logs/session.log"
+LOG_FILE="logs/session.log"
+mkdir -p logs
 
 # 입력 데이터 읽기
 INPUT=$(cat)

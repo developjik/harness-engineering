@@ -24,44 +24,44 @@
   "skills": [
     {
       "name": "brainstorm",
-      "path": ".claude/skills/brainstorm"
+      "path": "skills/brainstorm"
     },
     {
       "name": "implement",
-      "path": ".claude/skills/implement"
+      "path": "skills/implement"
     },
     {
       "name": "review",
-      "path": ".claude/skills/review"
+      "path": "skills/review"
     },
     {
       "name": "document",
-      "path": ".claude/skills/document"
+      "path": "skills/document"
     }
   ],
   "agents": [
     {
       "name": "architect",
-      "path": ".claude/agents/architect.md",
+      "path": "agents/architect.md",
       "description": "소프트웨어 아키텍처 설계 전문가"
     },
     {
       "name": "engineer",
-      "path": ".claude/agents/engineer.md",
+      "path": "agents/engineer.md",
       "description": "소프트웨어 엔지니어"
     },
     {
       "name": "guardian",
-      "path": ".claude/agents/guardian.md",
+      "path": "agents/guardian.md",
       "description": "코드 리뷰 전문가"
     },
     {
       "name": "librarian",
-      "path": ".claude/agents/librarian.md",
+      "path": "agents/librarian.md",
       "description": "기술 문서 작성 전문가"
     }
   ],
   "hooks": {
-    "path": ".claude/hooks.json"
+    "path": "hooks.json"
   }
 }

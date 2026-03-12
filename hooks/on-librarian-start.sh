@@ -3,10 +3,10 @@
 # SubagentStart Hook (librarian)
 # Librarian 에이전트 시작 시 실행되는 스크립트
 
-LOG_FILE=".claude/logs/session.log"
-STATE_FILE=".claude/state/current-agent.txt"
+LOG_FILE="logs/session.log"
+STATE_FILE="state/current-agent.txt"
 
-mkdir -p .claude/state
+mkdir -p logs state
 
 # 현재 에이전트 상태 저장
 echo "librarian" > "$STATE_FILE"

@@ -376,7 +376,7 @@ graph TD
     Log11 --> Log12["[SubagentStop: librarian]<br/>Librarian 종료"]
     Log12 --> Log13["[SessionEnd]<br/>정리"]
     
-    Log13 --> File["📝 .claude/logs/session.log<br/>완전한 세션 기록"]
+    Log13 --> File["📝 logs/session.log<br/>완전한 세션 기록"]
     
     style Session fill:#c8e6c9
     style File fill:#a5d6a7

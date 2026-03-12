@@ -3,13 +3,13 @@
     "SessionStart": [
       {
         "type": "command",
-        "command": ".claude/hooks/setup.sh"
+        "command": "hooks/setup.sh"
       }
     ],
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": ".claude/hooks/validate-input.sh"
+        "command": "hooks/validate-input.sh"
       }
     ],
     "PostToolUse": [
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-edit.sh"
+            "command": "hooks/post-edit.sh"
           }
         ]
       }
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-architect-start.sh"
+            "command": "hooks/on-architect-start.sh"
           }
         ]
       },
@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-engineer-start.sh"
+            "command": "hooks/on-engineer-start.sh"
           }
         ]
       },
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-guardian-start.sh"
+            "command": "hooks/on-guardian-start.sh"
           }
         ]
       },
@@ -56,7 +56,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-librarian-start.sh"
+            "command": "hooks/on-librarian-start.sh"
           }
         ]
       }
@@ -67,7 +67,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-architect-stop.sh"
+            "command": "hooks/on-architect-stop.sh"
           }
         ]
       },
@@ -76,7 +76,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-engineer-stop.sh"
+            "command": "hooks/on-engineer-stop.sh"
           }
         ]
       },
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-guardian-stop.sh"
+            "command": "hooks/on-guardian-stop.sh"
           }
         ]
       },
@@ -94,7 +94,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/on-librarian-stop.sh"
+            "command": "hooks/on-librarian-stop.sh"
           }
         ]
       }
@@ -102,7 +102,7 @@
     "SessionEnd": [
       {
         "type": "command",
-        "command": ".claude/hooks/cleanup.sh"
+        "command": "hooks/cleanup.sh"
       }
     ]
   }
