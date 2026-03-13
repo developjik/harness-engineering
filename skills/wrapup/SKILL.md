@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Edit, Grep, Glob
 ## 프로세스
 
 ### 1. 변경 사항 수집
-$ARGUMENTS 기능과 관련된 모든 변경 사항을 수집합니다:
+$ARGUMENTS 에서 `<feature-slug>`를 식별하고, `docs/specs/<feature-slug>/` 하위의 산출물(`plan.md`, `design.md` 등) 및 관련된 모든 변경 사항을 수집합니다:
 - 생성/수정/삭제된 파일 목록
 - 커밋 히스토리
 - 테스트 결과
@@ -44,22 +44,10 @@ $ARGUMENTS 기능과 관련된 모든 변경 사항을 수집합니다:
 - TODO 주석 정리
 - 불필요한 import 제거
 
-### 4. 최종 요약
+### 4. 최종 요약 문서 작성
 
-```markdown
-# [기능명] 구현 요약
-
-## 변경 사항
-- 생성: [파일 목록]
-- 수정: [파일 목록]
-- 삭제: [파일 목록]
-
-## 테스트 결과
-- 통과: X개 / 실패: 0개
-
-## 문서 업데이트
-- [갱신된 문서 목록]
-```
+`docs/templates/wrapup.md` 템플릿을 읽고 내용을 채운 뒤, **`docs/specs/<feature-slug>/wrapup.md`** 경로에 저장합니다.
+(별도 포맷을 지어내지 않고 템플릿의 항목을 모두 채워야 합니다)
 
 ## 출력
 
@@ -70,6 +58,7 @@ $ARGUMENTS 기능과 관련된 모든 변경 사항을 수집합니다:
 - 파일 변경: +X -Y ~Z
 - 테스트: 전체 통과
 - 문서: 업데이트됨
+- 📄 산출물: docs/specs/<feature-slug>/wrapup.md
 
 ✅ PDCA 사이클 완료!
 ```

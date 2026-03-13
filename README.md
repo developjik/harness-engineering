@@ -26,22 +26,22 @@ claude --plugin-dir ./harness-engineering
 ### 확장 PDCA 워크플로우
 
 ```
-/plan <기능 설명>        # 1. 요구사항 분석 (코드 없음)
-/design <기능명>         # 2. 코드 변경 계획 수립
-/implement <기능명>      # 3. TDD 기반 구현
-/check <기능명>          # 4. 리뷰 + 검증 + 자동 반복
-/wrapup <기능명>         # 5. 정리 + 문서화
+/plan <기능 설명>             # 1. feature-slug 확정 + docs/specs/<slug>/plan.md 생성
+/design <feature-slug>        # 2. docs/specs/<slug>/plan.md 기반 설계
+/implement <feature-slug>     # 3. docs/specs/<slug>/design.md 기반 TDD 구현
+/check <feature-slug>         # 4. 계획 대비 리뷰 + 검증 + 자동 반복
+/wrapup <feature-slug>        # 5. docs/specs/<slug>/wrapup.md 생성 + 문서화
 ```
 
 ### 통합 커맨드
 
 ```
-/harness plan <설명>     # 개별 스킬과 동일
-/harness design <기능명>
-/harness do <기능명>
-/harness check <기능명>
-/harness wrapup <기능명>
-/harness status          # 현재 PDCA 상태
+/harness plan <설명>            # feature-slug 추출 + Plan 산출물 생성
+/harness design <feature-slug>
+/harness do <feature-slug>
+/harness check <feature-slug>
+/harness wrapup <feature-slug>
+/harness status                 # 현재 PDCA 상태
 ```
 
 ### 전체 자동 실행
@@ -55,6 +55,12 @@ claude --plugin-dir ./harness-engineering
 ```
 /debug <버그 설명>       # 체계적 4단계 디버깅
 ```
+
+### Feature Slug 규칙
+
+- `/plan` 또는 `/fullrun` 이 최초 실행 시 `kebab-case` slug를 확정합니다. 예: `user-auth`
+- 이후 모든 단계는 같은 slug를 사용합니다. 예: `/design user-auth`
+- 단계 산출물은 `docs/specs/<feature-slug>/` 아래에 저장됩니다.
 
 ## 에이전트 (인지 모드)
 
@@ -90,27 +96,33 @@ harness-engineering/
 │   └── fullrun/SKILL.md
 ├── hooks/                          # 훅 스크립트 (6개)
 ├── hooks.json                      # 훅 설정
+├── scripts/                        # 검증 스크립트
+│   └── validate.sh
 ├── docs/                           # 문서
 │   ├── ARCHITECTURE.md
+│   ├── ARTIFACT-CONVENTION.md
 │   ├── SKILL-WRITING-GUIDE.md
 │   ├── AGENT-WRITING-GUIDE.md
-│   └── HOOK-WRITING-GUIDE.md
+│   ├── HOOK-WRITING-GUIDE.md
+│   ├── templates/
+│   │   ├── plan.md
+│   │   ├── design.md
+│   │   └── wrapup.md
+│   └── specs/                      # 실행 시 생성되는 feature 산출물 저장소
 └── README.md
 ```
 
-## 수동 검증
+## 검증
 
 ```bash
-# 플러그인 로드 테스트
-claude --plugin-dir ./harness-engineering
+# 전체 검증
+bash scripts/validate.sh
 
-# 스킬 확인
-# 실행 후 /help 에서 harness-engineering 스킬 목록 표시 확인
+# 개별 검증
+claude plugin validate .
+bash -n hooks/*.sh
 
-# 에이전트 확인
-# /agents 에서 6개 에이전트 표시 확인
-
-# 훅 테스트
+# 훅 동작 샘플 테스트
 echo '{"tool_name":"Bash","input":{"command":"ls"}}' | bash hooks/pre-tool.sh
 cat hooks.json | jq .
 ```
@@ -118,6 +130,7 @@ cat hooks.json | jq .
 ## 문서
 
 - [아키텍처](docs/ARCHITECTURE.md) — PDCA 흐름, 에이전트-스킬 관계, 훅 라이프사이클
+- [산출물 규약](docs/ARTIFACT-CONVENTION.md) — `docs/specs/<feature-slug>/` 기반 SSOT 규칙
 - [스킬 작성 가이드](docs/SKILL-WRITING-GUIDE.md) — 커스텀 스킬 만들기
 - [에이전트 작성 가이드](docs/AGENT-WRITING-GUIDE.md) — 커스텀 에이전트 만들기
 - [훅 작성 가이드](docs/HOOK-WRITING-GUIDE.md) — 커스텀 훅 만들기

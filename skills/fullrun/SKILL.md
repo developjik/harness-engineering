@@ -15,16 +15,17 @@ Plan부터 Wrap-up까지 **전체 PDCA 사이클**을 순차적으로 자동 실
 $ARGUMENTS 를 기반으로 아래 5단계를 순차 실행합니다:
 
 ### 1. Plan
+- `$ARGUMENTS`에서 기능명(`feature-slug`) 추출
 - 요구사항 분석, 목표·제약 정의
-- 사용자에게 핵심 질문 후 요구사항 문서 생성
+- `docs/specs/<feature-slug>/plan.md` 생성
 
 ### 2. Design
 - Plan 기반 코드 변경 계획 수립
 - 파일 단위 생성/수정/삭제 목록 작성
-- 아키텍처 다이어그램 생성
+- `docs/specs/<feature-slug>/design.md` 생성
 
 ### 3. Do (Implement)
-- Design 기반 TDD 구현
+- Design 문서 리딩 및 TDD 기반 구현
 - RED-GREEN-REFACTOR 사이클
 - 기능별 atomic commit
 
@@ -34,9 +35,8 @@ $ARGUMENTS 를 기반으로 아래 5단계를 순차 실행합니다:
 - 90% 이상 일치 시 통과
 
 ### 5. Wrap-up
-- 변경 로그 작성
-- 문서 업데이트
-- 코드 정리
+- 변경 로그 작성 및 문서 업데이트
+- `docs/specs/<feature-slug>/wrapup.md` 생성
 
 ## 실행 조건
 

@@ -13,12 +13,12 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ## 사용법
 
 ```
-/harness plan <기능 설명>      → Plan 단계 실행
-/harness design <기능명>       → Design 단계 실행
-/harness do <기능명>           → Implement(Do) 단계 실행
-/harness check <기능명>        → Check + auto-Iterate 실행
-/harness wrapup <기능명>       → Wrap-up 단계 실행
-/harness status                → 현재 PDCA 상태 확인
+/harness plan <기능 설명>            → Plan 단계 실행 (slug 추출 및 문서 생성)
+/harness design <feature-slug>       → Design 단계 실행
+/harness do <feature-slug>           → Implement(Do) 단계 실행
+/harness check <feature-slug>        → Check + auto-Iterate 실행
+/harness wrapup <feature-slug>       → Wrap-up 단계 실행
+/harness status                      → 현재 PDCA 상태 확인
 ```
 
 ## PDCA 흐름
@@ -31,23 +31,24 @@ Plan → Design → Do → Check(+Iterate) → Wrap-up
 
 첫 번째 인자를 액션으로 파싱합니다:
 
-**plan**: `/plan` 스킬을 호출합니다.
-- 요구사항 분석, 목표 정의
-- 코드 작성 없음
+**plan**: `/plan <기능 설명>` 스킬을 호출합니다.
+- 기능명(`feature-slug`) 추출, 요구사항 분석
+- `docs/specs/<feature-slug>/plan.md` 생성
 
-**design**: `/design` 스킬을 호출합니다.
+**design**: `/design <feature-slug>` 스킬을 호출합니다.
 - Plan 기반 코드 변경 계획 수립
-- 파일 단위 생성/수정/삭제 목록
+- `docs/specs/<feature-slug>/design.md` 생성
 
-**do**: `/implement` 스킬을 호출합니다.
+**do**: `/implement <feature-slug>` 스킬을 호출합니다.
 - RED-GREEN-REFACTOR TDD 구현
 
-**check**: `/check` 스킬을 호출합니다.
+**check**: `/check <feature-slug>` 스킬을 호출합니다.
 - 코드 리뷰 + 계획 일치 검증
 - 불일치 시 자동 Iterate (최대 10회)
 
-**wrapup**: `/wrapup` 스킬을 호출합니다.
+**wrapup**: `/wrapup <feature-slug>` 스킬을 호출합니다.
 - 정리, 문서화, 변경 로그
+- `docs/specs/<feature-slug>/wrapup.md` 생성
 
 **status**: 현재 PDCA 진행 상태를 표시합니다.
 

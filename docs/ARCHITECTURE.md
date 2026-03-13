@@ -71,6 +71,8 @@ sequenceDiagram
 
 | 경로 | 내용 |
 |:-----|:-----|
+| `docs/templates/*.md` | 단계별 산출물 템플릿 파일 |
+| `docs/specs/<feature-slug>/` | 실행 시 기능별 산출물 저장소 |
 | `~/.harness-engineering/logs/session.log` | 세션 로그 |
 | `~/.harness-engineering/logs/security.log` | 차단된 명령 로그 |
 | `~/.harness-engineering/state/pdca-phase.txt` | 현재 PDCA 단계 |
