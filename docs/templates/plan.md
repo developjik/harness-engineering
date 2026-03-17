@@ -21,3 +21,12 @@
 
 ## 5. 성공 기준 (Success Criteria)
 - [작업 완료를 판단할 측정 가능하고 명확한 기준]
+
+## 6. 의존성 (Dependencies)
+
+### 선행 기능 (Prerequisite Features)
+- [ ] [feature-slug-1]: [선행 기능 설명]
+- [ ] [feature-slug-2]: [선행 기능 설명]
+
+### 외부 의존성 (External Dependencies)
+- [API 버전, 라이브러리, 서비스 등 외부 의존성]
