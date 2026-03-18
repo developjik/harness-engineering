@@ -12,8 +12,9 @@ PAYLOAD=$(cat)
 HARNESS_DIR=$(harness_runtime_dir "$PAYLOAD")
 LOG_DIR="${HARNESS_DIR}/logs"
 BACKUP_DIR="${HARNESS_DIR}/backups"
+STATE_DIR="${HARNESS_DIR}/state"
 
-mkdir -p "$LOG_DIR" "$BACKUP_DIR"
+mkdir -p "$LOG_DIR" "$BACKUP_DIR" "$STATE_DIR"
 
 # 도구 이름 추출 (jq 사용 가능 시)
 TOOL_NAME=$(json_query "$PAYLOAD" '.tool_name // .tool // ""')
@@ -35,6 +36,15 @@ case "$TOOL_NAME" in
     if [ -n "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
       BACKUP_NAME=$(echo "$FILE_PATH" | tr '/' '_')
       cp "$FILE_PATH" "${BACKUP_DIR}/${BACKUP_NAME}.$(date +%s).bak" 2>/dev/null || true
+    fi
+    
+    # 파일 충돌 감지 (기능 레지스트리 기반)
+    PROJECT_ROOT=$(harness_project_root "$PAYLOAD")
+    CURRENT_FEATURE=$(cat "${STATE_DIR}/current-feature.txt" 2>/dev/null || echo "")
+    if [ -n "$CURRENT_FEATURE" ] && [ -n "$FILE_PATH" ]; then
+      if ! detect_file_conflicts "$PROJECT_ROOT" "$FILE_PATH" "$CURRENT_FEATURE"; then
+        echo "[$TIMESTAMP] CONFLICT_WARNING: File $FILE_PATH may conflict with other in-progress features" >> "${LOG_DIR}/conflicts.log"
+      fi
     fi
     ;;
 esac
