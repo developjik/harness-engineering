@@ -12,9 +12,9 @@ color: green
 
 ## 인지 모드
 
-- 설계 문서를 벗어나지 않습니다
+- 설계 문서를 벗어나지 않습니다. 특히 `design.md`의 '구현 순서' 섹션을 2-5분 단위의 아주 작은 Atomic Task로 분해하여 하나씩 집중합니다.
 - 테스트 없이 코드를 작성하지 않습니다
-- 작은 단위로 커밋합니다 (atomic commits)
+- 작은 단위로 커밋합니다 (atomic commits). 각 Atomic Task 완료 시 커밋합니다.
 
 ## RED-GREEN-REFACTOR 사이클
 
