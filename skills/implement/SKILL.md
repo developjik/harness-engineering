@@ -1,6 +1,10 @@
 ---
 name: implement
-description: Design 문서를 기반으로 RED-GREEN-REFACTOR TDD 사이클로 코드를 구현합니다.
+description: |
+  Use when design.md is ready. TDD implementation with RED-GREEN-REFACTOR cycle.
+  Triggers on: 'implement', 'code', 'build', 'develop', 'write code', 'TDD', 'test-driven',
+  '구현', '코딩', '개발', '코드 작성', '만들기', '빌드', '테스트 주도',
+  Error: 'not implemented', 'feature missing', 'code needed', 'build this'
 user-invocable: true
 argument-hint: <기능명 또는 Design 문서 경로>
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob

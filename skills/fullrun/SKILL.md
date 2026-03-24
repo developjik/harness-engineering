@@ -1,6 +1,10 @@
 ---
 name: fullrun
-description: Plan→Design→Do→Check→Wrap-up 전체 PDCA 사이클을 한 번에 자동 실행합니다.
+description: |
+  Execute complete PDCA cycle automatically: Plan→Design→Do→Check→Wrap-up in one command.
+  Triggers on: 'fullrun', 'all at once', 'complete cycle', 'end to end', 'automate all',
+  '전체 실행', '한번에', '자동화', '처음부터 끝까지',
+  Error: 'run everything', 'do it all', 'complete feature', 'full pipeline'
 user-invocable: true
 argument-hint: <기능 또는 프로젝트 설명>
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob

@@ -1,6 +1,10 @@
 ---
 name: design
-description: Plan 문서를 기반으로 실제 코드의 생성·수정·삭제 계획을 수립합니다. 파일 단위로 변경 사항을 구체화합니다.
+description: |
+  Use after plan.md exists. Technical design and file-level change planning from requirements.
+  Triggers on: 'design', 'architecture', 'technical spec', 'how to implement', 'file changes',
+  '설계', '아키텍처', '기술 명세', '구현 방법', '파일 변경', '구조 설계', 'API 설계',
+  Error: 'no design', 'missing architecture', 'how should this work', 'implementation plan needed'
 user-invocable: true
 argument-hint: <기능명 또는 Plan 문서 경로>
 allowed-tools: Read, Grep, Glob, Bash

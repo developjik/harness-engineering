@@ -1,6 +1,10 @@
 ---
 name: harness
-description: 확장 PDCA 워크플로우 오케스트레이터. /harness plan, /harness design, /harness do, /harness check, /harness wrapup 으로 단계별 진행합니다.
+description: |
+  PDCA workflow orchestrator. Run any phase: plan, design, do, check, wrapup, or check status.
+  Triggers on: 'harness', 'workflow', 'pdca', 'pipeline', 'run phase', 'next step',
+  '워크플로우', '단계 실행', '다음 단계', '진행', 'status',
+  Error: 'which phase', 'run pdca', 'continue workflow', 'next stage'
 user-invocable: true
 argument-hint: <plan|design|do|check|wrapup|status> [기능명]
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob

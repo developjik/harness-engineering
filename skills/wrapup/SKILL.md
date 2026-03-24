@@ -1,6 +1,10 @@
 ---
 name: wrapup
-description: 구현 내용을 정리하고, 변경 로그와 문서를 작성합니다. PDCA 사이클의 마지막 단계입니다.
+description: |
+  Use after check passes. Document changes, write changelog, update README, finalize feature.
+  Triggers on: 'wrapup', 'document', 'changelog', 'finalize', 'complete', 'done',
+  '마무리', '문서화', '변경 로그', '완료', '정리', '최종',
+  Error: 'document this', 'update changelog', 'what changed', 'feature complete'
 user-invocable: true
 argument-hint: <기능명>
 allowed-tools: Read, Write, Edit, Grep, Glob

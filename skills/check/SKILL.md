@@ -1,6 +1,10 @@
 ---
 name: check
-description: 구현 코드를 리뷰하고 계획 대비 일치를 검증합니다. 불일치 시 자동으로 반복 수정합니다 (최대 10회).
+description: |
+  Use after implementation. Review code against plan/design, verify consistency, auto-fix gaps.
+  Triggers on: 'review', 'verify', 'check', 'validate', 'code review', 'quality check',
+  '리뷰', '검증', '확인', '체크', '코드 리뷰', '품질 검사', '일치 확인',
+  Error: 'verify implementation', 'check against spec', 'review needed', 'does this match plan'
 user-invocable: true
 argument-hint: <기능명 또는 Design 문서 경로>
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob

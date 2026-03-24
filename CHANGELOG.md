@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.3.0] - 2026-03-25
+
+### Added
+- **CSO (Claude Search Optimization)**: 스킬 description 검색 최적화
+  - 9개 스킬 SKILL.md frontmatter description 개선
+  - 트리거 키워드, 에러 메시지 패턴, 한/영 동의어 추가
+  - 150단어 이내 토큰 효율성 유지
+
+### Changed
+- `skills/*/SKILL.md`: 모든 스킬 description에 CSO 패턴 적용
+  - plan, design, implement, check, wrapup, harness, debug, fullrun, grill-me
+
+### References
+- Based on: [Superpowers CSO](https://github.com/obra/superpowers)
+
 ## [1.2.0] - 2026-03-25
 
 ### Added

@@ -1,6 +1,10 @@
 ---
 name: plan
-description: 요구사항을 분석하고 목표와 제약사항을 정의합니다. 코드 작성 없이 "무엇을 만들 것인가"를 명확히 합니다. 새 프로젝트나 기능 시작 시 사용하세요.
+description: |
+  Use when starting a new feature or project. Requirements analysis and goal definition phase.
+  Triggers on: 'plan', 'requirements', 'spec', 'what to build', 'define scope', 'new feature',
+  '프로젝트 시작', '요구사항', '계획', '기획', '무엇을 만들', 'scope 정의', '기능 명세',
+  Error: 'unclear requirements', 'missing spec', 'no plan', 'what should this do'
 user-invocable: true
 argument-hint: <기능 또는 프로젝트 설명>
 allowed-tools: Read, Grep, Glob, Bash

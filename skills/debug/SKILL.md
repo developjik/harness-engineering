@@ -1,6 +1,10 @@
 ---
 name: debug
-description: 체계적 4단계 디버깅(재현→고립→근본원인→수정)으로 버그를 추적하고 해결합니다.
+description: |
+  Systematic 4-step debugging: reproduce, isolate, root cause, fix. Evidence-based, no guessing.
+  Triggers on: 'debug', 'bug', 'error', 'fix', 'broken', 'not working', 'crash', 'exception',
+  '디버그', '버그', '에러', '수정', '고치기', '안됨', '오류', '문제',
+  Error: 'TypeError', 'ReferenceError', 'SyntaxError', 'undefined', 'null pointer', 'failed'
 user-invocable: true
 argument-hint: <버그 설명 또는 에러 메시지>
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob

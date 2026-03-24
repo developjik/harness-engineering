@@ -1,6 +1,10 @@
 ---
 name: grill-me
-description: plan.md 또는 design.md와 같은 산출물에 대해 사용자 또는 다른 에이전트가 철저하게 질문하고 검증하는 과정을 진행합니다. 계획/설계의 모호함이나 누락된 부분을 발견하고 해결하는 데 사용합니다.
+description: |
+  Deep interrogation of plan.md or design.md. Find ambiguities, gaps, and validate decisions.
+  Triggers on: 'grill', 'interrogate', 'challenge', 'validate plan', 'review design', 'question',
+  '심층 질문', '검증', '도전', '계획 검토', '설계 리뷰', '빠진 부분',
+  Error: 'unclear plan', 'ambiguous design', 'missing details', 'validate assumptions'
 user-invocable: true
 argument-hint: <feature-slug>
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
