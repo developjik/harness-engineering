@@ -29,6 +29,7 @@
 |:---|:---|:---|:---|:---|:---|:---|:---|
 | `example-feature` | 예제 기능 | `Planned` | - | - | - | 2024-01-01 | - |
 | `automation-levels` | L0-L4 자동화 레벨 시스템 | `Completed` | librarian | - | hooks/, .harness/ | 2026-03-24 | 2026-03-25 |
+| `fresh-context` | Context Rot 방지 시스템 | `Completed` | librarian | automation-levels | hooks/, .harness/ | 2026-03-25 | 2026-03-25 |
 
 ---
 

@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.2.0] - 2026-03-25
+
+### Added
+- **Context Rot Prevention (Fresh Context)**: 긴 세션에서 컨텍스트 품질 저하 감지 및 관리
+  - 복합 지표 기반 점수 계산 (토큰 40% + 작업 30% + 시간 30%)
+  - 3단계 등급 시스템 (healthy / caution / rot)
+  - 5초 TTL 캐시로 성능 최적화
+  - JSONL 이벤트 로그 기록
+- **11 Context Rot Functions**: `hooks/common.sh`에 추가
+  - `record_session_start()`, `increment_tool_call_count()`
+  - `calculate_context_rot()`, `get_context_rot_score()`, `get_context_rot_grade()`
+  - `should_use_subagent()`, `log_context_rot_event()`
+  - `get_tool_call_count()`, `get_session_duration_minutes()`
+  - `reset_context_rot_state()`
+- **Context Templates**: 서브에이전트 전달용 템플릿
+  - `docs/templates/context/PROJECT.md`: 프로젝트 컨텍스트
+  - `docs/templates/context/STATE.md`: 현재 상태 요약
+  - `docs/templates/context/README.md`: 사용 가이드
+
+### Changed
+- `hooks/common.sh`: Context Rot 감지 함수 11개 추가 (+254줄)
+- `hooks/session-start.sh`: 세션 초기화 로직 추가 (+15줄)
+- `hooks/post-tool.sh`: 도구 호출 추적 로직 추가 (+28줄)
+- `README.md`: Context Rot 섹션 추가
+
+### Dependencies
+- Requires: `automation-levels` (v1.1.0)
+
 ## [1.1.0] - 2026-03-25
 
 ### Added
@@ -22,15 +50,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - safety (0.10): 안전 위반 없음
 - **Decision Logging**: 모든 PDCA 전환 결정을 JSONL로 기록
 - **Recommended Level**: 신뢰 점수 기반 추천 레벨 제공
-
-### Changed
-- `hooks/common.sh`: 11개 자동화 관련 함수 추가
-- `hooks/session-start.sh`: 자동화 설정 초기화 로직 추가
-- `hooks/on-agent-start.sh`: 단계 전환 승인 로직 추가
-
-### Files
-- Created: `docs/templates/automation-config.md` - 자동화 설정 가이드
-- Created: `docs/specs/automation-levels/` - Plan, Design, Wrapup 문서
 
 ## [1.0.0] - 2025-01-15
 

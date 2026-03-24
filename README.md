@@ -151,6 +151,39 @@ automation:
 
 세부 설정은 [자동화 설정 가이드](docs/templates/automation-config.md)를 참조하세요.
 
+## Context Rot 방지 (Fresh Context)
+
+긴 세션에서 발생하는 컨텍스트 품질 저하(Context Rot)를 감지하고 관리합니다.
+
+### 점수 계산
+
+```
+score = (토큰비율 × 0.4) + (작업비율 × 0.3) + (시간비율 × 0.3)
+
+등급:
+  < 0.5: healthy (건강)
+  0.5-0.7: caution (주의)
+  >= 0.7: rot (서브에이전트 권장)
+```
+
+### 상태 확인
+
+```bash
+# Context Rot 점수 조회
+cat .harness/state/context-rot-score
+
+# 이벤트 로그 확인
+cat .harness/logs/context-rot.jsonl
+```
+
+### 컨텍스트 템플릿
+
+서브에이전트 호출 시 전달할 컨텍스트 템플릿:
+- `docs/templates/context/PROJECT.md` — 프로젝트 개요
+- `docs/templates/context/STATE.md` — 현재 작업 상태
+
+상세 내용은 [Context Rot 가이드](docs/templates/context/README.md)를 참조하세요.
+
 ## 문서
 
 - [아키텍처](docs/ARCHITECTURE.md) — PDCA 흐름, 에이전트-스킬 관계, 훅 라이프사이클

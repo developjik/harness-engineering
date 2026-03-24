@@ -59,3 +59,18 @@ if [ "$CURRENT_LEVEL" != "$RECOMMENDED_LEVEL" ]; then
   echo "[INFO] Based on trust score ($TRUST_SCORE), recommended automation level is $RECOMMENDED_LEVEL" >&2
   echo "[INFO] Current level is $CURRENT_LEVEL. To change, edit .harness/config.yaml" >&2
 fi
+
+# ============================================================================
+# Context Rot 추적 초기화
+# ============================================================================
+record_session_start "$PROJECT_ROOT"
+
+# Context Rot 상태 로그
+CONTEXT_ROT_SCORE=$(get_context_rot_score "$PROJECT_ROOT")
+CONTEXT_ROT_GRADE=$(get_context_rot_grade "$PROJECT_ROOT")
+
+echo "[$TIMESTAMP] CONTEXT_ROT_SCORE=$CONTEXT_ROT_SCORE" >> "$SESSION_LOG"
+echo "[$TIMESTAMP] CONTEXT_ROT_GRADE=$CONTEXT_ROT_GRADE" >> "$SESSION_LOG"
+
+# Context Rot 이벤트 로그
+log_context_rot_event "$PROJECT_ROOT" "session_start"
