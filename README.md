@@ -129,6 +129,28 @@ echo '{"cwd":"'"$(pwd)"'","tool_name":"Bash","tool_input":{"command":"ls"}}' | b
 cat hooks.json | jq .
 ```
 
+## 자동화 레벨 (L0-L4)
+
+PDCA 워크플로우의 자동화 정도를 5단계로 조절할 수 있습니다.
+
+| 레벨 | 이름 | 설명 | 추천 대상 |
+|:----:|:-----|:-----|:----------|
+| L0 | Manual | 모든 전환에 승인 필요 | 초보자, 중요 프로젝트 |
+| L1 | Guided | 중요 전환만 승인 | 학습 단계 |
+| L2 | Semi-Auto | 불확실할 때만 승인 (기본값) | 일반 사용자 |
+| L3 | Auto | 품질 게이트만 통과하면 자동 | 숙련자 |
+| L4 | Full-Auto | 완전 자동 | 매우 숙련된 사용자 |
+
+### 설정 방법
+
+```bash
+# .harness/config.yaml 편집
+automation:
+  level: L2  # L0, L1, L2, L3, L4
+```
+
+세부 설정은 [자동화 설정 가이드](docs/templates/automation-config.md)를 참조하세요.
+
 ## 문서
 
 - [아키텍처](docs/ARCHITECTURE.md) — PDCA 흐름, 에이전트-스킬 관계, 훅 라이프사이클

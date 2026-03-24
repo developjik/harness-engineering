@@ -28,6 +28,7 @@
 | `feature-slug` | 제목 | 상태 | 담당 | 의존성 | 영향 범위 | 생성일 | 예상 완료일 |
 |:---|:---|:---|:---|:---|:---|:---|:---|
 | `example-feature` | 예제 기능 | `Planned` | - | - | - | 2024-01-01 | - |
+| `automation-levels` | L0-L4 자동화 레벨 시스템 | `Completed` | librarian | - | hooks/, .harness/ | 2026-03-24 | 2026-03-25 |
 
 ---
 

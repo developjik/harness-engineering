@@ -58,3 +58,53 @@ if ! check_feature_registry "$PROJECT_ROOT"; then
   echo "[$TIMESTAMP] REGISTRY_CHECK FAILED" >> "${LOG_DIR}/registry.log"
   echo "[INFO] Feature registry (docs/features.md) not found. Creating or updating it is recommended." >&2
 fi
+
+# ============================================================================
+# 자동화 레벨 기반 단계 전환 승인 확인
+# ============================================================================
+# 이전 단계 조회
+PREVIOUS_PHASE=$(cat "${STATE_DIR}/pdca-phase.txt" 2>/dev/null || echo "idle")
+
+# 현재 자동화 레벨 조회
+CURRENT_LEVEL=$(get_automation_level "$PROJECT_ROOT")
+echo "$CURRENT_LEVEL" > "${STATE_DIR}/current-level.txt"
+
+# 단계 전환 감지 및 승인 확인
+if [ "$PREVIOUS_PHASE" != "idle" ] && [ "$PREVIOUS_PHASE" != "$PHASE" ] && [ "$PHASE" != "unknown" ] && [ "$PREVIOUS_PHASE" != "unknown" ]; then
+  TRANSITION=$(get_transition_name "$PREVIOUS_PHASE" "$PHASE")
+
+  if [ -n "$TRANSITION" ]; then
+    APPROVAL_NEEDED=$(should_approve_transition "$CURRENT_LEVEL" "$TRANSITION")
+
+    echo "[$TIMESTAMP] PHASE_TRANSITION from=$PREVIOUS_PHASE to=$PHASE level=$CURRENT_LEVEL approval=$APPROVAL_NEEDED" >> "${LOG_DIR}/session.log"
+
+    # 결정 로그 기록
+    log_decision "$PROJECT_ROOT" "phase_transition" \
+      "\"from\":\"$PREVIOUS_PHASE\",\"to\":\"$PHASE\",\"level\":\"$CURRENT_LEVEL\",\"approval_needed\":\"$APPROVAL_NEEDED\""
+
+    case "$APPROVAL_NEEDED" in
+      true)
+        # 승인 대기 상태 설정
+        set_pending_approval "$PROJECT_ROOT" "$TRANSITION" "Level $CURRENT_LEVEL requires approval for $TRANSITION"
+        echo "[APPROVAL REQUIRED] Phase transition: $PREVIOUS_PHASE → $PHASE" >&2
+        echo "[APPROVAL REQUIRED] Automation level: $CURRENT_LEVEL" >&2
+        echo "[APPROVAL REQUIRED] Please confirm to proceed, or edit .harness/config.yaml to change automation level" >&2
+        ;;
+      if_uncertain)
+        # 불확실한 경우 승인 요청 (선택적)
+        # 실제 구현에서는 더 정교한 불확실성 감지 로직 필요
+        echo "[INFO] Phase transition: $PREVIOUS_PHASE → $PHASE (Level: $CURRENT_LEVEL)" >&2
+        echo "[INFO] If uncertain about this transition, please review before proceeding" >&2
+        # 로그만 기록하고 자동 진행
+        log_decision "$PROJECT_ROOT" "auto_proceed" \
+          "\"transition\":\"$TRANSITION\",\"reason\":\"if_uncertain_auto_proceed\""
+        ;;
+      false)
+        # 자동 진행
+        echo "[INFO] Auto-proceed: $PREVIOUS_PHASE → $PHASE (Level: $CURRENT_LEVEL)" >&2
+        # 이전 승인 상태 초기화
+        clear_pending_approval "$PROJECT_ROOT"
+        ;;
+    esac
+  fi
+fi
