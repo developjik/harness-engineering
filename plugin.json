@@ -5,5 +5,9 @@
   "author": {
     "name": "developjik"
   },
-  "skills": "./skills/"
+  "repository": "https://github.com/developjik/harness-engineering",
+  "license": "MIT",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "hooks": "./hooks.json"
 }
