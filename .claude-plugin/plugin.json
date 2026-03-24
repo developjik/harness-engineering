@@ -5,16 +5,5 @@
   "author": {
     "name": "developjik"
   },
-  "license": "MIT",
-  "homepage": "https://github.com/developjik/harness-engineering",
-  "repository": "https://github.com/developjik/harness-engineering.git",
-  "keywords": [
-    "pdca",
-    "tdd",
-    "code-review",
-    "multi-agent",
-    "context-engineering",
-    "workflow",
-    "automation"
-  ]
+  "skills": "./skills/"
 }
