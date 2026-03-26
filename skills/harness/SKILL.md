@@ -1,13 +1,13 @@
 ---
 name: harness
 description: |
-  PDCA workflow orchestrator. Run any phase: plan, design, do, check, wrapup, or check status.
+  PDCA workflow orchestrator. Run any phase: clarify, plan, design, do, check, wrapup, or check status.
   Triggers on: 'harness', 'workflow', 'pdca', 'pipeline', 'run phase', 'next step',
   '워크플로우', '단계 실행', '다음 단계', '진행', 'status',
   Error: 'which phase', 'run pdca', 'continue workflow', 'next stage'
 user-invocable: true
-argument-hint: <plan|design|do|check|wrapup|status> [기능명]
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob
+argument-hint: <clarify|plan|design|do|check|wrapup|status> [기능명]
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 ---
 
 # Harness Skill — PDCA 오케스트레이터
@@ -17,6 +17,7 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ## 사용법
 
 ```
+/harness clarify <기능 설명>         → Clarify 단계 실행 (요청 구체화)
 /harness plan <기능 설명>            → Plan 단계 실행 (slug 추출 및 문서 생성)
 /harness design <feature-slug>       → Design 단계 실행
 /harness do <feature-slug>           → Implement(Do) 단계 실행
@@ -28,14 +29,20 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ## PDCA 흐름
 
 ```
-Plan → Design → Do → Check(+Iterate) → Wrap-up
+Clarify → Plan → Design → Do → Check(+Iterate) → Wrap-up
 ```
 
 ### $ARGUMENTS 파싱
 
 첫 번째 인자를 액션으로 파싱합니다:
 
+**clarify**: `/clarify <기능 설명>` 스킬을 호출합니다.
+- 사용자 요청 분석 및 구체화
+- 소크라테스식 질문, 대안 탐색
+- `docs/specs/<feature-slug>/clarify.md` 생성
+
 **plan**: `/plan <기능 설명>` 스킬을 호출합니다.
+- clarify.md 참조 (있는 경우)
 - 기능명(`feature-slug`) 추출, 요구사항 분석
 - `docs/specs/<feature-slug>/plan.md` 생성
 
@@ -56,9 +63,27 @@ Plan → Design → Do → Check(+Iterate) → Wrap-up
 
 **status**: 현재 PDCA 진행 상태를 표시합니다.
 
+## 권장 워크플로우
+
+### 새로운 기능 개발
+```
+1. /harness clarify "사용자 인증 기능"  # 요청 구체화
+2. /harness plan user-auth             # 요구사항 문서화
+3. /harness design user-auth           # 기술 설계
+4. /harness do user-auth               # TDD 구현
+5. /harness check user-auth            # 검증
+6. /harness wrapup user-auth           # 문서화
+```
+
+### 전체 자동 실행
+```
+/fullrun "사용자 인증 기능"  # Clarify부터 Wrapup까지 자동 실행
+```
+
 ## 주의사항
 
 - 각 단계는 개별 스킬로도 직접 호출 가능합니다
-  (`/plan`, `/design`, `/implement`, `/check`, `/wrapup`)
+  (`/clarify`, `/plan`, `/design`, `/implement`, `/check`, `/wrapup`)
+- **새로운 기능은 반드시 clarify 먼저 실행을 권장합니다**
 - 단계를 건너뛰지 마세요 — 각 단계의 출력이 다음 단계의 입력입니다
 - 전체 자동 실행이 필요하면 `/fullrun` 을 사용하세요

@@ -2,12 +2,12 @@
 
 확장 PDCA(Plan→Design→Do→Check→Wrap-up) 기반 AI 소프트웨어 개발 자동화 Claude Code 플러그인.
 
-6개 전문 에이전트(인지 모드)와 8개 실행 스킬로 체계적인 개발 워크플로우를 제공합니다.
+6개 전문 에이전트(인지 모드)와 10개 실행 스킬로 체계적인 개발 워크플로우를 제공합니다.
 
 ## 한눈에 보기
 
 - **6개 에이전트**: `strategist`, `architect`, `engineer`, `guardian`, `librarian`, `debugger`
-- **9개 스킬**: `plan`, `design`, `implement`, `check`, `wrapup`, `harness`, `debug`, `fullrun`, `grill-me`
+- **10개 스킬**: `clarify`, `plan`, `design`, `implement`, `check`, `wrapup`, `harness`, `debug`, `fullrun`, `grill-me`
 - **훅 자동화**: 위험 명령 차단, 파일 백업, 변경 추적, PDCA 단계 자동 추적
 - **런타임 저장소**: 실행 프로젝트의 `.harness/` 사용, Git 저장소라면 `.git/info/exclude`에 자동 등록
 - **PDCA 5단계**: Check에서 불일치 시 자동 Iterate (최대 10회)
@@ -27,11 +27,12 @@ claude --plugin-dir ./harness-engineering
 ### 확장 PDCA 워크플로우
 
 ```
-/plan <기능 설명>             # 1. feature-slug 확정 + docs/specs/<slug>/plan.md 생성
-/design <feature-slug>        # 2. docs/specs/<slug>/plan.md 기반 설계
-/implement <feature-slug>     # 3. docs/specs/<slug>/design.md 기반 TDD 구현
+/clarify <기능 설명>        # 0. 요청 구체화 + docs/specs/<slug>/clarify.md 생성
+/plan <feature-slug>          # 1. clarify.md 기반 요구사항 정의 + plan.md 생성
+/design <feature-slug>        # 2. plan.md 기반 기술 설계
+/implement <feature-slug>     # 3. design.md 기반 TDD 구현
 /check <feature-slug>         # 4. 계획 대비 리뷰 + 검증 + 자동 반복
-/wrapup <feature-slug>        # 5. docs/specs/<slug>/wrapup.md 생성 + 문서화
+/wrapup <feature-slug>        # 5. wrapup.md 생성 + 문서화
 ```
 
 ### 통합 커맨드
@@ -48,7 +49,7 @@ claude --plugin-dir ./harness-engineering
 ### 전체 자동 실행
 
 ```
-/fullrun <기능 설명>     # Plan→Design→Do→Check→Wrap-up 한번에
+/fullrun <기능 설명>     # Clarify→Plan→Design→Do→Check→Wrap-up 한번에
 ```
 
 ### 유틸리티
@@ -59,7 +60,7 @@ claude --plugin-dir ./harness-engineering
 
 ### Feature Slug 규칙
 
-- `/plan` 또는 `/fullrun` 이 최초 실행 시 `kebab-case` slug를 확정합니다. 예: `user-auth`
+- `/clarify`, `/plan` 또는 `/fullrun` 이 최초 실행 시 `kebab-case` slug를 확정합니다. 예: `user-auth`
 - 이후 모든 단계는 같은 slug를 사용합니다. 예: `/design user-auth`
 - 단계 산출물은 `docs/specs/<feature-slug>/` 아래에 저장됩니다.
 
@@ -86,7 +87,8 @@ harness-engineering/
 │   ├── guardian.md
 │   ├── librarian.md
 │   └── debugger.md
-├── skills/                         # 스킬 (8개)
+├── skills/                         # 스킬 (10개)
+│   ├── clarify/SKILL.md
 │   ├── plan/SKILL.md
 │   ├── design/SKILL.md
 │   ├── implement/SKILL.md
@@ -107,6 +109,7 @@ harness-engineering/
 │   ├── AGENT-WRITING-GUIDE.md
 │   ├── HOOK-WRITING-GUIDE.md
 │   ├── templates/
+│   │   ├── clarify.md
 │   │   ├── plan.md
 │   │   ├── design.md
 │   │   └── wrapup.md
@@ -192,12 +195,16 @@ cat .harness/logs/context-rot.jsonl
 - [에이전트 작성 가이드](docs/AGENT-WRITING-GUIDE.md) — 커스텀 에이전트 만들기
 - [훅 작성 가이드](docs/HOOK-WRITING-GUIDE.md) — 커스텀 훅 만들기
 
-## 참고
+## 영감을 받은 프로젝트
 
-- [superpowers](https://github.com/obra/superpowers) — 자동 스킬 트리거, TDD 중심
-- [bkit-claude-code](https://github.com/popup-studio-ai/bkit-claude-code) — PDCA, Context Engineering
-- [gstack](https://github.com/garrytan/gstack) — 역할 기반 모드 전환
+이 프로젝트는 다음 오픈소스 프로젝트들을 분석하고 참조하여 개발되었습니다:
+
+- [superpowers](https://github.com/obra/superpowers) — 자동 스킬 트리거, TDD 중심 개발 워크플로우
+- [bkit-claude-code](https://github.com/popup-studio-ai/bkit-claude-code) — PDCA 사이클, Context Engineering 패턴
+- [gstack](https://github.com/garrytan/gstack) — 역할 기반 모드 전환, 멀티 에이전트 구조
 - [get-shit-done](https://github.com/gsd-build/get-shit-done) — spec-driven 상태 파일 시스템
+- [gsd-2](https://github.com/gsd-build/gsd-2) — 차세대 GSD 아키텍처
+- [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) — 오픈 에이전트 프레임워크
 
 ## 라이선스
 

@@ -1,26 +1,32 @@
 ---
 name: fullrun
 description: |
-  Execute complete PDCA cycle automatically: Plan→Design→Do→Check→Wrap-up in one command.
+  Execute complete PDCA cycle automatically: Clarify→Plan→Design→Do→Check→Wrap-up in one command.
   Triggers on: 'fullrun', 'all at once', 'complete cycle', 'end to end', 'automate all',
   '전체 실행', '한번에', '자동화', '처음부터 끝까지',
   Error: 'run everything', 'do it all', 'complete feature', 'full pipeline'
 user-invocable: true
 argument-hint: <기능 또는 프로젝트 설명>
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 ---
 
 # Fullrun Skill — 전체 PDCA 자동 실행
 
-Plan부터 Wrap-up까지 **전체 PDCA 사이클**을 순차적으로 자동 실행합니다.
+Clarify부터 Wrap-up까지 **전체 PDCA 사이클**을 순차적으로 자동 실행합니다.
 
 ## 실행 순서
 
-$ARGUMENTS 를 기반으로 아래 5단계를 순차 실행합니다:
+$ARGUMENTS 를 기반으로 아래 6단계를 순차 실행합니다:
+
+### 0. Clarify (NEW!)
+- 사용자 요청 분석 및 구체화
+- 소크라테스식 질문으로 모호성 해소
+- 대안 탐색 및 Gray Areas 식별
+- `docs/specs/<feature-slug>/clarify.md` 생성
 
 ### 1. Plan
-- `$ARGUMENTS`에서 기능명(`feature-slug`) 추출
-- 요구사항 분석, 목표·제약 정의
+- clarify.md 기반 요구사항 분석
+- 목표·제약·스코프 정의
 - `docs/specs/<feature-slug>/plan.md` 생성
 
 ### 2. Design
@@ -45,6 +51,7 @@ $ARGUMENTS 를 기반으로 아래 5단계를 순차 실행합니다:
 ## 실행 조건
 
 - 각 단계가 성공해야 다음 단계로 진행합니다
+- Clarify 단계에서 모호성이 높으면(7점 이상) 사용자 확인 후 진행
 - 단계 실패 시 사용자에게 보고하고 중단합니다
 - Check에서 10회 Iterate 후에도 미충족이면 중단합니다
 
@@ -54,6 +61,7 @@ $ARGUMENTS 를 기반으로 아래 5단계를 순차 실행합니다:
 🚀 Fullrun 완료
 
 📊 PDCA 실행 결과:
+✅ 0. Clarify — 요청 구체화 완료 (모호성: X→Y)
 ✅ 1. Plan — 요구사항 정의 완료
 ✅ 2. Design — 변경 계획 수립 완료
 ✅ 3. Do — TDD 구현 완료 (X개 커밋)
@@ -64,10 +72,17 @@ $ARGUMENTS 를 기반으로 아래 5단계를 순차 실행합니다:
 - 파일 변경: +A -B ~C
 - 테스트: 전체 통과
 - 문서: 업데이트됨
+
+📄 산출물:
+- docs/specs/<feature-slug>/clarify.md
+- docs/specs/<feature-slug>/plan.md
+- docs/specs/<feature-slug>/design.md
+- docs/specs/<feature-slug>/wrapup.md
 ```
 
 ## 주의사항
 
 - 대규모 프로젝트보다는 **단일 기능 구현**에 적합합니다
 - 중간에 사용자 의사결정이 필요한 경우 멈추고 질문합니다
+- Clarify 단계에서 깊은 구체화가 필요하면 개별 `/clarify` 실행 권장
 - 단계별 세밀한 제어가 필요하면 개별 스킬을 사용하세요

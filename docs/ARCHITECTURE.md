@@ -50,7 +50,10 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    Request["기능 설명"] --> Plan["/plan"]
+    Request["기능 설명"] --> Clarify["/clarify"]
+    Clarify --> ClarifyDoc["docs/specs/&lt;slug&gt;/clarify.md"]
+
+    ClarifyDoc --> Plan["/plan"]
     Plan --> PlanDoc["docs/specs/&lt;slug&gt;/plan.md"]
 
     PlanDoc --> Design["/design"]
@@ -70,6 +73,7 @@ flowchart LR
 
 ### 핵심 포인트
 
+- `clarify.md`는 사용자 요청을 구체화한 문서로, Plan 단계의 입력이 됩니다.
 - `plan.md`와 `design.md`가 이후 단계의 **고정 입력** 역할을 합니다.
 - `implement` 단계는 실제 코드와 테스트를 변경하지만 별도 중간 산출물 문서는 만들지 않습니다.
 - `check` 단계도 별도 문서를 생성하지 않고, 계획 대비 검증 후 필요 시 `implement`로 되돌립니다.
@@ -86,6 +90,7 @@ flowchart TB
     end
 
     subgraph Skills["실행 스킬"]
+        ClarifySkill["clarify"]
         PlanSkill["plan"]
         DesignSkill["design"]
         ImplementSkill["implement"]
@@ -103,18 +108,21 @@ flowchart TB
         Debugger["debugger"]
     end
 
+    Harness --> ClarifySkill
     Harness --> PlanSkill
     Harness --> DesignSkill
     Harness --> ImplementSkill
     Harness --> CheckSkill
     Harness --> WrapupSkill
 
+    Fullrun --> ClarifySkill
     Fullrun --> PlanSkill
     Fullrun --> DesignSkill
     Fullrun --> ImplementSkill
     Fullrun --> CheckSkill
     Fullrun --> WrapupSkill
 
+    Direct --> ClarifySkill
     Direct --> PlanSkill
     Direct --> DesignSkill
     Direct --> ImplementSkill
@@ -122,6 +130,7 @@ flowchart TB
     Direct --> WrapupSkill
     DebugCmd --> DebugSkill
 
+    Strategist -.-> ClarifySkill
     Strategist -.-> PlanSkill
     Architect -.-> DesignSkill
     Engineer -.-> ImplementSkill

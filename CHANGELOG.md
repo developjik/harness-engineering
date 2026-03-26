@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.4.0] - 2026-03-27
+
+### Added
+- **Clarify Skill (PDCA 0단계)**: 사용자 요청 구체화 스킬
+  - 소크라테스식 질문으로 모호성 해소
+  - 요청 유형 분류 및 모호성 점수 산정
+  - 대안 탐색 (2-3개 접근 방식 비교)
+  - Gray Areas 식별 (Visual/API/Content)
+  - 자동화 레벨(L0-L4)에 따른 질문 깊이 조절
+  - `docs/specs/<feature-slug>/clarify.md` 산출물 생성
+- **Clarify Template**: `docs/templates/clarify.md` 템플릿 추가
+
+### Changed
+- `skills/plan/SKILL.md`: clarify.md 참조 로직 추가
+  - clarify.md 존재 시 자동 로드하여 Plan 작성에 활용
+  - clarify.md 없을 시 실행 여부 확인
+- `skills/fullrun/SKILL.md`: Clarify 단계 추가 (5단계 → 6단계)
+  - Clarify → Plan → Design → Do → Check → Wrap-up
+- `skills/harness/SKILL.md`: clarify 명령어 추가
+  - `/harness clarify <기능 설명>` 진입점 추가
+  - PDCA 흐름에 Clarify 단계 추가
+
+### References
+- Inspired by: [Superpowers brainstorming](https://github.com/obra/superpowers)
+- Inspired by: [gstack /office-hours](https://github.com/garrytan/gstack)
+- Inspired by: [GSD /gsd:discuss-phase](https://github.com/gsd-build/get-shit-done)
+- Inspired by: [bkit /pdca pm](https://github.com/popup-studio-ai/bkit-claude-code)
+- Inspired by: [Oh My OpenAgent Prometheus](https://github.com/code-yeongyu/oh-my-openagent)
+
 ## [1.3.0] - 2026-03-25
 
 ### Added

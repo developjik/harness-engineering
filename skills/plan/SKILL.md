@@ -2,11 +2,12 @@
 name: plan
 description: |
   Use when starting a new feature or project. Requirements analysis and goal definition phase.
+  Prerequisite: Run /clarify first for new features.
   Triggers on: 'plan', 'requirements', 'spec', 'what to build', 'define scope', 'new feature',
   '프로젝트 시작', '요구사항', '계획', '기획', '무엇을 만들', 'scope 정의', '기능 명세',
   Error: 'unclear requirements', 'missing spec', 'no plan', 'what should this do'
 user-invocable: true
-argument-hint: <기능 또는 프로젝트 설명>
+argument-hint: <feature-slug>
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -14,7 +15,36 @@ allowed-tools: Read, Grep, Glob, Bash
 
 **"무엇을 만들 것인가?"** 를 명확히 합니다. 코드를 작성하지 않습니다.
 
+## 전제 조건
+
+⚠️ **새로운 기능의 경우, 먼저 `/clarify` 를 실행하세요.**
+
+Plan 스킬은 `docs/specs/<feature-slug>/clarify.md` 가 존재하면 자동으로 참조합니다.
+clarify.md가 없으면 경고 후 진행 여부를 확인합니다.
+
 ## 프로세스
+
+### 0. Clarify 문서 확인
+
+#### 0.1. clarify.md 존재 확인
+`docs/specs/<feature-slug>/clarify.md` 파일이 존재하는지 확인합니다.
+
+- **존재함**: clarify.md를 읽어 구체화된 요청 내용을 파악합니다.
+- **없음**: 사용자에게 clarify 실행 여부를 확인합니다.
+  ```
+  ⚠️ clarify.md가 없습니다. 먼저 /clarify <feature-slug>를 실행하시겠습니까?
+  [Y] 예, clarify 먼저 실행
+  [N] 아니오, 바로 plan 진행
+  ```
+
+#### 0.2. clarify.md 내용 로드 (있는 경우)
+clarify.md에서 다음 정보를 추출하여 Plan 작성에 활용합니다:
+- 핵심 목표
+- 성공 기준
+- 제약 조건
+- 스코프 경계
+- 선택된 접근 방식
+- Gray Areas 결정 사항
 
 ### 1. Feature Slug 추출 및 초기 분석
 
@@ -39,10 +69,17 @@ $ARGUMENTS 에서 기능명(Feature Slug)을 추출합니다. (kebab-case, 예: 
 
 ### 2. 모호한 부분에 대한 사용자 질문
 모호한 부분은 반드시 사용자에게 질문합니다. 가정하지 않습니다.
+**clarify.md가 있다면 이미 해결된 내용은 생략합니다.**
 
 ### 3. 요구사항 문서 작성
 `docs/templates/plan.md` 템플릿을 읽고 내용을 채운 뒤, **`docs/specs/<feature-slug>/plan.md`** 경로에 저장합니다.
 (직접 마크다운 포맷을 지어내지 말고 반드시 템플릿 구조를 따르세요)
+
+#### 3.1. clarify.md 내용 통합
+clarify.md가 있는 경우, "초기 질문 및 답변" 섹션에 clarify.md의 핵심 내용을 요약하여 통합합니다:
+- 소크라테스식 질문의 핵심 답변
+- 선택된 접근 방식
+- Gray Areas 결정 사항
 
 ## 출력
 
@@ -52,6 +89,7 @@ $ARGUMENTS 에서 기능명(Feature Slug)을 추출합니다. (kebab-case, 예: 
 📋 요구사항 요약:
 - [핵심 요구사항 목록]
 - 📄 산출물: docs/specs/<feature-slug>/plan.md
+- 📎 참조: docs/specs/<feature-slug>/clarify.md (있는 경우)
 
 ➡️ 다음 단계: /design <feature-slug> 로 코드 변경 계획을 수립하세요.
 ```
