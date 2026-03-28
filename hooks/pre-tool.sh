@@ -170,9 +170,8 @@ case "$TOOL_NAME" in
       fi
 
       # 시스템 경로 검사
-      local normalized_path
       normalized_path=$(echo "$FILE_PATH" | tr -s '/')
-      local system_paths=("/etc" "/root" "/var" "/usr" "/bin" "/sbin" "/opt" "/sys" "/proc")
+      system_paths=("/etc" "/root" "/var" "/usr" "/bin" "/sbin" "/opt" "/sys" "/proc")
       for sys_path in "${system_paths[@]}"; do
         if [[ "$normalized_path" == "$sys_path"/* ]]; then
           echo "[$TIMESTAMP] BLOCKED (system_path): $FILE_PATH" >> "${LOG_DIR}/security.log"

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # automation-level.sh — 자동화 레벨 (L0-L4) 관련 함수
 # common.sh에서 분리된 모듈
+#
+# DEPENDENCIES: json-utils.sh, logging.sh
 
 # ============================================================================
 # 자동화 레벨 설정

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # logging.sh — 구조화된 로깅 시스템
 # common.sh에서 분리된 모듈
+#
+# DEPENDENCIES: (none - base module)
 
 # ============================================================================
 # 로깅 설정
@@ -104,9 +106,12 @@ mask_sensitive_data() {
   # 각 민감 패턴에 대해 마스킹 적용
   for pattern in "${SENSITIVE_PATTERNS[@]}"; do
     # password=xxx, --key=xxx 등의 패턴을 [REDACTED]로 치환
-    # sed 특수 문자 이스케이프
+    # sed 특수 문자 이스케이프 (완전한 이스케이프)
     local escaped_pattern
-    escaped_pattern=$(printf '%s' "$pattern" | sed 's/[[\.*^$()+?{|]/\\&/g')
+    # sed BRE 특수 문자: . * [ ] ^ $ \( \) \{ \} \+ \? \|
+    # sed 구분자: /
+    # 문자 클래스 내 특수 문자: - (범위)
+    escaped_pattern=$(printf '%s' "$pattern" | sed 's/[.[\*^$()+?{|\\]/\\&/g; s/-/\\-/g; s/\//\\\//g')
     text=$(printf '%s' "$text" | sed -E "s/(${escaped_pattern}[[:space:]]*=[[:space:]]*)[^[:space:]]+/\1[REDACTED]/gi" 2>/dev/null || printf '%s' "$text")
     text=$(printf '%s' "$text" | sed -E "s/(--${escaped_pattern}[[:space:]]*)[^[:space:]]+/\1[REDACTED]/gi" 2>/dev/null || printf '%s' "$text")
   done

@@ -42,30 +42,6 @@ run_security_test() {
 }
 
 # ============================================================================
-# 테스트 유틸리티
-# ============================================================================
-
-TESTS_RUN=0
-TESTS_PASSED=0
-TESTS_FAILED=0
-
-run_security_test() {
-  local test_name="$1"
-  local test_func="$2"
-
-  TESTS_RUN=$((TESTS_RUN + 1))
-  echo -n "Running: $test_name ... "
-
-  if $test_func 2>/dev/null; then
-    echo "✓ PASS"
-    TESTS_PASSED=$((TESTS_PASSED + 1))
-  else
-    echo "✗ FAIL"
-    TESTS_FAILED=$((TESTS_FAILED + 1))
-  fi
-}
-
-# ============================================================================
 # 1. 경로 순회 (Path Traversal) 테스트
 # ============================================================================
 

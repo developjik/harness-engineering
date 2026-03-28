@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 # json-utils.sh — JSON 파싱 유틸리티 함수
 # common.sh에서 분리된 모듈
+#
+# DEPENDENCIES: (none - base module)
+
+# ============================================================================
+# jq 설치 확인 (fail-safe)
+# ============================================================================
+
+# jq 설치 여부 확인 및 경고
+# Returns: 0 (설치됨), 1 (미설치)
+require_jq() {
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '[ERROR] jq is required but not installed.\n' >&2
+    printf '[ERROR] Install with: brew install jq (macOS) or apt install jq (Ubuntu)\n' >&2
+    return 1
+  fi
+  return 0
+}
 
 # ============================================================================
 # JSON 파싱 헬퍼 함수
@@ -15,12 +32,13 @@ json_query() {
     return 0
   fi
 
-  if command -v jq >/dev/null 2>&1; then
-    printf '%s' "$payload" | jq -r "$query" 2>/dev/null || printf '\n'
-  else
-    printf '[WARNING] jq not installed. JSON parsing unavailable.\n' >&2
-    printf '\n'
+  # jq 필수 - 없으면 에러 반환
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '[ERROR] jq not installed. Cannot parse JSON.\n' >&2
+    return 1
   fi
+
+  printf '%s' "$payload" | jq -r "$query" 2>/dev/null || printf '\n'
 }
 
 # ============================================================================
@@ -49,12 +67,13 @@ safe_json_query() {
     return 1
   fi
 
-  if command -v jq >/dev/null 2>&1; then
-    printf '%s' "$payload" | jq -r "$query" 2>/dev/null || printf '\n'
-  else
-    printf '[WARNING] jq not installed. JSON parsing unavailable.\n' >&2
-    printf '\n'
+  # jq 필수 - 없으면 에러 반환
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '[ERROR] jq not installed. Cannot parse JSON.\n' >&2
+    return 1
   fi
+
+  printf '%s' "$payload" | jq -r "$query" 2>/dev/null || printf '\n'
 }
 
 # ============================================================================
@@ -67,14 +86,14 @@ read_json_file() {
 
   if [ ! -f "$file_path" ]; then
     printf '[ERROR] File not found: %s\n' "$file_path" >&2
-    printf '\n'
     return 1
   fi
 
-  if command -v jq >/dev/null 2>&1; then
-    jq -r "$query" "$file_path" 2>/dev/null || printf '\n'
-  else
-    printf '[WARNING] jq not installed. Cannot read JSON file.\n' >&2
-    printf '\n'
+  # jq 필수 - 없으면 에러 반환
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '[ERROR] jq not installed. Cannot read JSON file.\n' >&2
+    return 1
   fi
+
+  jq -r "$query" "$file_path" 2>/dev/null || printf '\n'
 }

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # validation.sh — 입력 검증 유틸리티 함수
 # 보안 강화: 경로 순회, 인젝션, 권한 검증
+#
+# DEPENDENCIES: logging.sh
 
 # ============================================================================
 # 파일 경로 검증
@@ -218,10 +220,21 @@ match_whitelist_strict() {
     # 패턴으로 시작하는 경우, 뒤에 오는 내용이 안전한지 확인
     if [[ "$trimmed_command" == "$trimmed_pattern"* ]]; then
       local suffix="${trimmed_command#${trimmed_pattern}}"
-      # 접미사가 공백이나 안전한 문자로만 구성되어 있는지 확인
-      # 추가 인자가 없거나, 단일 경로만 있는 경우 허용
-      if [[ -z "$suffix" ]] || [[ "$suffix" =~ ^[[:space:]]*[a-zA-Z0-9_./-]+$ ]]; then
-        # 하지만 경로 순회가 없어야 함
+      # 접미사가 안전한지 확인
+      # - 공백만 있거나
+      # - 상대 경로만 허용 (/ 문자 없이, .. 없이)
+      # 추가 인자가 없거나, 단일 상대 경로만 있는 경우 허용
+      if [[ -z "$suffix" ]]; then
+        return 0
+      fi
+      # 공백으로 시작하는 경우, 상대 경로만 허용
+      if [[ "$suffix" =~ ^[[:space:]]+[a-zA-Z0-9_.-]+$ ]]; then
+        return 0
+      fi
+      # 슬래시 없는 상대 경로 허용 (예: node_modules/project-a)
+      # 하지만 절대 경로(/로 시작)는 차단
+      if [[ "$suffix" =~ ^[[:space:]]*[a-zA-Z0-9_.-]+(/[a-zA-Z0-9_.-]+)*$ ]]; then
+        # 경로 순회가 없어야 함
         if [[ "$suffix" != *".."* ]]; then
           return 0
         fi

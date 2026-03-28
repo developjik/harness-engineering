@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # worktree.sh — Git Worktree 관리 유틸리티
 # 격리된 개발 환경을 위한 Worktree 생성/삭제 관리
+#
+# DEPENDENCIES: (none - standalone utility)
 
 set -euo pipefail
 

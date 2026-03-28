@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # feature-sync.sh — 기능 레지스트리 자동 동기화
 # PDCA 단계 변경 시 docs/features.md 자동 업데이트
+#
+# DEPENDENCIES: feature-registry.sh, logging.sh
 
 # ============================================================================
 # PDCA 단계 → 상태 매핑

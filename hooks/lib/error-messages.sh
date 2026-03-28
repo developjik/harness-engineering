@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 # error-messages.sh — 사용자 친화적 에러 메시지 유틸리티
 # 에러 코드, 대안, 문서 링크를 포함한 JSON 응답 생성
+#
+# DEPENDENCIES: logging.sh (for escape_json_string)
+
+# ============================================================================
+# 의존성 로드
+# ============================================================================
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# logging.sh에서 escape_json_string 함수 로드
+if [[ -f "${SCRIPT_DIR}/logging.sh" ]]; then
+  # shellcheck source=hooks/lib/logging.sh
+  source "${SCRIPT_DIR}/logging.sh"
+fi
 
 # ============================================================================
 # 에러 코드 정의
@@ -42,17 +56,37 @@ create_error_json() {
   local suggestion="${3:-}"
   local doc_link="${4:-}"
 
+  # JSON 이스케이프 처리
+  local escaped_reason
+  local escaped_suggestion
+  local escaped_doc_link
+
+  # escape_json_string 함수가 있으면 사용, 없으면 기본 이스케이프
+  if declare -f escape_json_string >/dev/null 2>&1; then
+    escaped_reason=$(escape_json_string "$reason")
+    escaped_suggestion=$(escape_json_string "$suggestion")
+    escaped_doc_link=$(escape_json_string "$doc_link")
+  else
+    # 폴백: 기본 이스케이프
+    escaped_reason="${reason//\"/\\\"}"
+    escaped_reason="${escaped_reason//\\/\\\\}"
+    escaped_suggestion="${suggestion//\"/\\\"}"
+    escaped_suggestion="${escaped_suggestion//\\/\\\\}"
+    escaped_doc_link="${doc_link//\"/\\\"}"
+    escaped_doc_link="${escaped_doc_link//\\/\\\\}"
+  fi
+
   local json='{'
   json+='"decision":"block",'
   json+='"error_code":"'"$error_code"'",'
-  json+='"reason":"'"$reason"'"'
+  json+='"reason":"'"$escaped_reason"'"'
 
-  if [ -n "$suggestion" ]; then
-    json+=',"suggestion":"'"$suggestion"'"'
+  if [ -n "$escaped_suggestion" ]; then
+    json+=',"suggestion":"'"$escaped_suggestion"'"'
   fi
 
-  if [ -n "$doc_link" ]; then
-    json+=',"doc_link":"'"$doc_link"'"'
+  if [ -n "$escaped_doc_link" ]; then
+    json+=',"doc_link":"'"$escaped_doc_link"'"'
   fi
 
   json+='}'

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # feature-registry.sh — 기능 레지스트리 및 의존성 관리 함수
 # common.sh에서 분리된 모듈
+#
+# DEPENDENCIES: json-utils.sh, logging.sh
 
 # ============================================================================
 # 기능 레지스트리 관련 함수

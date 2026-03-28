@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # context-rot.sh — Context Rot 감지 및 관리 함수
 # common.sh에서 분리된 모듈
+#
+# DEPENDENCIES: json-utils.sh, logging.sh
 
 # ============================================================================
 # Context Rot 설정

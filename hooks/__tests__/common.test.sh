@@ -67,24 +67,6 @@ assert_not_empty() {
   fi
 }
 
-assert_equals() {
-  local expected="$1"
-  local actual="$2"
-  local message="${3:-}"
-
-  TESTS_RUN=$((TESTS_RUN + 1))
-
-  if [[ "$expected" == "$actual" ]]; then
-    TESTS_PASSED=$((TESTS_PASSED + 1))
-    printf "${GREEN}✓ PASS${NC}: %s\n" "$message"
-  else
-    TESTS_FAILED=$((TESTS_FAILED + 1))
-    printf "${RED}✗ FAIL${NC}: %s\n" "$message"
-    printf "  Expected: '%s'\n" "$expected"
-    printf "  Actual:   '%s'\n" "$actual"
-  fi
-}
-
 assert_file_exists() {
   local file_path="$1"
   local message="${2:-}"

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # skill-chain.sh — 스킬 체인 검증 유틸리티
 # requires 필드를 기반으로 선행 스킬 완료 여부 확인
+#
+# DEPENDENCIES: json-utils.sh, logging.sh, feature-registry.sh
 
 # ============================================================================
 # 스킬 체인 검증
