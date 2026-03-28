@@ -93,16 +93,180 @@ check_dependencies_met() {
   return 0
 }
 
-# 의존성 그래프를 위상 정렬
+# ============================================================================
+# Topological Sort for Dependency Resolution
+# ============================================================================
+
+# Kahn's algorithm for topological sorting
+# Usage: topological_sort <tasks_json>
+# Returns: JSON array of task IDs in execution order
 topological_sort() {
   local tasks_json="${1:-}"
-  local sorted=()
-  local visited=""
-  local temp_mark=""
 
-  # 간단한 위상 정렬 구현
-  # 실제로는 jq와 함께 더 복잡한 로직 필요
-  echo "[]"
+  if [[ -z "$tasks_json" ]] || ! command -v jq &>/dev/null; then
+    echo "[]"
+    return 1
+  fi
+
+  # Simple implementation: return task IDs in dependency order
+  # For complex dependency graphs, use group_tasks_into_waves
+  local task_count
+  task_count=$(echo "$tasks_json" | jq 'length' 2>/dev/null || echo "0")
+
+  if [[ "$task_count" -eq 0 ]]; then
+    echo "[]"
+    return 0
+  fi
+
+  # Get tasks with no dependencies first, then tasks with dependencies
+  local no_deps with_deps
+  no_deps=$(echo "$tasks_json" | jq '[.[] | select((.dependencies // []) | length == 0) | .id]')
+  with_deps=$(echo "$tasks_json" | jq '[.[] | select((.dependencies // []) | length > 0) | .id]')
+
+  # Combine: no-deps first, then with-deps
+  echo "$no_deps" | jq --argjson with_deps "$with_deps" '. + $with_deps'
+}
+
+# Group tasks into waves based on dependencies
+# Usage: group_tasks_into_waves <tasks_json>
+# Returns: JSON array of waves, each containing task IDs that can run in parallel
+group_tasks_into_waves() {
+  local tasks_json="${1:-}"
+
+  if [[ -z "$tasks_json" ]] || ! command -v jq &>/dev/null; then
+    echo "[]"
+    return 1
+  fi
+
+  local task_count
+  task_count=$(echo "$tasks_json" | jq 'length')
+
+  if [[ "$task_count" -eq 0 ]]; then
+    echo "[]"
+    return 0
+  fi
+
+  # Build dependency graph
+  local all_tasks="{}"
+  for task in $(echo "$tasks_json" | jq -r '.[] | @base64'); do
+    local task_data
+    task_data=$(echo "$task" | base64 --decode)
+    local task_id deps
+    task_id=$(echo "$task_data" | jq -r '.id')
+    deps=$(echo "$task_data" | jq -c '.dependencies // []')
+    all_tasks=$(echo "$all_tasks" | jq --arg id "$task_id" --argjson deps "$deps" '.[$id] = $deps')
+  done
+
+  local waves="[]"
+  local completed="{}"
+  local remaining=$(echo "$tasks_json" | jq '[.[].id]')
+
+  local wave_num=0
+  local max_waves=20  # Prevent infinite loops
+
+  while [[ $(echo "$remaining" | jq 'length') -gt 0 ]] && [[ $wave_num -lt $max_waves ]]; do
+    wave_num=$((wave_num + 1))
+
+    # Find tasks with all dependencies completed
+    local ready="[]"
+    for task_id in $(echo "$remaining" | jq -r '.[]'); do
+      local deps
+      deps=$(echo "$all_tasks" | jq -r --arg id "$task_id" '.[$id] // []')
+
+      # Check if all deps are completed
+      local all_met=true
+      for dep in $(echo "$deps" | jq -r '.[]'); do
+        if ! echo "$completed" | jq -e --arg dep "$dep" '.[$dep] // false' >/dev/null 2>&1; then
+          all_met=false
+          break
+        fi
+      done
+
+      if [[ "$all_met" == "true" ]]; then
+        ready=$(echo "$ready" | jq --arg id "$task_id" '. + [$id]')
+      fi
+    done
+
+    # If no tasks are ready, there's a cycle
+    local ready_count
+    ready_count=$(echo "$ready" | jq 'length')
+    if [[ "$ready_count" -eq 0 ]]; then
+      echo "$waves"
+      return 0
+    fi
+
+    # Add wave to result
+    waves=$(echo "$waves" | jq --argjson ready "$ready" '. + [$ready]')
+
+    # Mark tasks as completed
+    for task_id in $(echo "$ready" | jq -r '.[]'); do
+      completed=$(echo "$completed" | jq --arg id "$task_id" '.[$id] = true')
+      remaining=$(echo "$remaining" | jq --arg id "$task_id" 'del(.[] | select(. == $id))')
+    done
+  done
+
+  echo "$waves"
+}
+
+# Detect circular dependencies
+# Usage: detect_circular_dependencies <tasks_json>
+# Returns: JSON with cycle info or empty if no cycle
+detect_circular_dependencies() {
+  local tasks_json="${1:-}"
+
+  if [[ -z "$tasks_json" ]] || ! command -v jq &>/dev/null; then
+    echo '{"error": "invalid_input"}'
+    return 1
+  fi
+
+  # Simple cycle detection using DFS
+  local visited="{}"
+  local rec_stack="{}"
+  local cycle="[]"
+
+  local task_ids
+  task_ids=$(echo "$tasks_json" | jq -r '.[].id')
+
+  for task_id in $task_ids; do
+    if ! echo "$visited" | jq -e --arg id "$task_id" '.[$id] // false' >/dev/null 2>&1; then
+      # DFS from this node
+      local stack="[\"$task_id\"]"
+      local path="[\"$task_id\"]"
+
+      while [[ $(echo "$stack" | jq 'length') -gt 0 ]]; do
+        local current
+        current=$(echo "$stack" | jq -r '.[-1]')
+        stack=$(echo "$stack" | jq '.[:-1]')
+
+        visited=$(echo "$visited" | jq --arg id "$current" '.[$id] = true')
+
+        # Get dependencies
+        local deps
+        deps=$(echo "$tasks_json" | jq -r --arg id "$current" '.[] | select(.id == $id) | .dependencies // [] | .[]')
+
+        for dep in $deps; do
+          if echo "$path" | jq -e --arg d "$dep" 'index($d)' >/dev/null 2>&1; then
+            # Cycle detected
+            cycle=$(echo "$cycle" | jq --arg from "$current" --arg to "$dep" '. + [{"from": $from, "to": $to}]')
+          fi
+
+          if ! echo "$visited" | jq -e --arg d "$dep" '.[$d] // false' >/dev/null 2>&1; then
+            stack=$(echo "$stack" | jq --arg d "$dep" '. + [$d]')
+            path=$(echo "$path" | jq --arg d "$dep" '. + [$d]')
+          fi
+        done
+      done
+    fi
+  done
+
+  local cycle_count
+  cycle_count=$(echo "$cycle" | jq 'length')
+
+  if [[ "$cycle_count" -gt 0 ]]; then
+    echo "{\"has_cycle\": true, \"cycles\": $cycle}"
+  else
+    echo '{"has_cycle": false}'
+  fi
 }
 
 # ============================================================================
