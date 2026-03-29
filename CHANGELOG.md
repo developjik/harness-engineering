@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.5.0] - 2026-03-29
+
+### Added (P2 Advanced Features)
+- **Hash-Anchored Edit (P2-1)**: 파일 해시 기반 충돌 방지 시스템
+  - `hooks/lib/hash-anchored-edit.sh`: 파일 무결성 검증 및 충돌 감지
+  - `register_file_hash()`: 파일 등록 및 해시 저장
+  - `verify_file_integrity()`: 무결성 검증
+  - `prepare_edit()`: 편집 준비 (충돌 감지)
+  - `finalize_edit()`: 편집 완료 및 해시 갱신
+- **Wave Execution (P2-2)**: 의존성 기반 병렬 태스크 실행
+  - `hooks/lib/wave-executor.sh`: 웨이브 실행 라이브러리
+  - `topological_sort()`: 위상 정렬로 의존성 해결
+  - `group_tasks_into_waves()`: 병렬 실행 가능한 태스크 그룹화
+  - `detect_circular_dependencies()`: 순환 의존성 감지
+  - `execute_wave()`: 웨이브 단위 병렬 실행
+
+### Fixed (POSIX Compatibility)
+- **Bash 3.2 macOS 호환성**: 기본 쉘에서도 동작하도록 수정
+  - bash 4.0+ associative arrays → POSIX-compatible alternatives
+  - BSD/GNU sed 호환성 해결 (`sed -i ''` vs `sed -i`)
+  - subshell 변수 scope 문제 해결
+  - `grep -oP` → POSIX-compatible alternatives (`awk`, `sed`)
+- **테스트 호환성**: 모든 테스트가 bash 3.2에서 통과하도록 수정
+
+### Changed
+- P0/P1/P2 기능들이 `docs/features.md` 레지스트리에 등록됨
+  - `p0-foundation` (Completed)
+  - `p1-enhancement` (Completed)
+  - `p2-advanced` (Completed)
+
 ## [1.4.0] - 2026-03-27
 
 ### Added

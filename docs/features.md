@@ -27,10 +27,40 @@
 
 | `feature-slug` | 제목 | 상태 | 담당 | 의존성 | 영향 범위 | 생성일 | 예상 완료일 |
 |:---|:---|:---|:---|:---|:---|:---|:---|
-| `example-feature` | 예제 기능 | `Planned` | - | - | - | 2024-01-01 | - |
+| `example-feature` | 예제 기능 (삭제 권장) | `Planned` | - | - | - | 2024-01-01 | - |
+
+### P0 Foundation (Completed)
+
+| `feature-slug` | 제목 | 상태 | 담당 | 의존성 | 영향 범위 | 생성일 | 완료일 |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| `p0-1-test-runner` | 다중 프레임워크 테스트 실행 | `Completed` | engineer | - | hooks/lib/test-runner.sh, hooks/lib/verification-classes.sh | 2026-03-26 | 2026-03-26 |
+| `p0-2-subagent` | 서브에이전트 스포닝 | `Completed` | engineer | - | hooks/lib/subagent-spawner.sh | 2026-03-26 | 2026-03-26 |
+| `p0-3-state-machine` | 상태 머신 엔진 | `Completed` | engineer | - | hooks/lib/state-machine.sh | 2026-03-26 | 2026-03-26 |
+
+### P1 Enhancement (Completed)
+
+| `feature-slug` | 제목 | 상태 | 담당 | 의존성 | 영향 범위 | 생성일 | 완료일 |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| `p1-1-review` | 2단계 리뷰 시스템 | `Completed` | guardian | p0-2-subagent, p0-3-state-machine | hooks/lib/review-engine.sh | 2026-03-27 | 2026-03-27 |
+| `p1-2-skill-eval` | 스킬 평가 프레임워크 | `Completed` | librarian | - | hooks/lib/skill-evaluation.sh | 2026-03-27 | 2026-03-27 |
+| `p1-3-crash-recovery` | 크래시 복구 & 포렌식 | `Completed` | debugger | p0-3-state-machine | hooks/lib/crash-recovery.sh | 2026-03-27 | 2026-03-27 |
+| `p1-4-browser-test` | 브라우저 테스트 통합 | `Completed` | engineer | - | hooks/lib/browser-testing.sh | 2026-03-27 | 2026-03-27 |
+
+### P2 Advanced (Completed)
+
+| `feature-slug` | 제목 | 상태 | 담당 | 의존성 | 영향 범위 | 생성일 | 완료일 |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| `p2-1-hash-edit` | 해시 앵커 에디트 | `Completed` | engineer | - | hooks/lib/hash-anchored-edit.sh | 2026-03-29 | 2026-03-29 |
+| `p2-2-wave-exec` | 웨이브 실행 (병렬 처리) | `Completed` | engineer | p0-2-subagent | hooks/lib/wave-executor.sh | 2026-03-29 | 2026-03-29 |
+
+### Core Features (Completed)
+
+| `feature-slug` | 제목 | 상태 | 담당 | 의존성 | 영향 범위 | 생성일 | 완료일 |
+|:---|:---|:---|:---|:---|:---|:---|:---|
 | `automation-levels` | L0-L4 자동화 레벨 시스템 | `Completed` | librarian | - | hooks/, .harness/ | 2026-03-24 | 2026-03-25 |
 | `fresh-context` | Context Rot 방지 시스템 | `Completed` | librarian | automation-levels | hooks/, .harness/ | 2026-03-25 | 2026-03-25 |
 | `cso` | Claude Search Optimization | `Completed` | librarian | - | skills/*/SKILL.md | 2026-03-25 | 2026-03-25 |
+| `posix-compat` | POSIX 호환성 (bash 3.2) | `Completed` | engineer | - | hooks/lib/*.sh, hooks/__tests__/*.sh | 2026-03-29 | 2026-03-29 |
 
 ---
 
