@@ -126,11 +126,11 @@ xml_to_md() {
 
   # Extract attributes
   local task_id task_wave task_depends task_type task_priority
-  task_id=$(echo "$content" | grep -oP 'id="\K[^"]+' | head -1 || echo "")
-  task_wave=$(echo "$content" | grep -oP 'wave="\K[^"]+' | head -1 || echo "1")
-  task_depends=$(echo "$content" | grep -oP 'depends="\K[^"]+' | head -1 || echo "")
-  task_type=$(echo "$content" | grep -oP 'type="\K[^"]+' | head -1 || echo "implementation")
-  task_priority=$(echo "$content" | grep -oP 'priority="\K[^"]+' | head -1 || echo "medium")
+  task_id=$(echo "$content" | sed -n 's/id="\([^"]*\)".*/\1/p' | head -1 || echo "")
+  task_wave=$(echo "$content" | sed -n 's/wave="\([^"]*\)".*/\1/p' | head -1 || echo "1")
+  task_depends=$(echo "$content" | sed -n 's/depends="\([^"]*\)".*/\1/p' | head -1 || echo "")
+  task_type=$(echo "$content" | sed -n 's/type="\([^"]*\)".*/\1/p' | head -1 || echo "implementation")
+  task_priority=$(echo "$content" | sed -n 's/priority="\([^"]*\)".*/\1/p' | head -1 || echo "medium")
 
   # Extract elements (using sed for portability)
   local title description requirements action acceptance_criteria verify done notes
@@ -146,7 +146,7 @@ xml_to_md() {
 
   # Extract files
   local files
-  files=$(echo "$content" | grep -oP '(?<=<file>)[^<]+' | tr '\n' '|' | sed 's/|$//')
+  files=$(echo "$content" | sed -n 's/<file>\([^<]*\)<\/file>/\1/p' | tr '\n' '|' | sed 's/|$//')
 
   # Build Markdown output
   local md_content="# Task ${task_id}: ${title}
@@ -280,7 +280,7 @@ md_to_xml() {
 
   # Extract files
   local files_section
-  files_section=$(echo "$content" | sed -n '/^## Files$/,/^## /p' | grep -oP '`\K[^`]+' | tr '\n' '|')
+  files_section=$(echo "$content" | sed -n '/^## Files$/,/^## /p' | sed -n 's/`\([^`]*\)`/\1/p' | tr '\n' '|')
 
   # Build XML output
   local xml_content='<?xml version="1.0" encoding="UTF-8"?>
@@ -477,11 +477,11 @@ parse_xml_task() {
 
   local id wave depends type priority title description requirements action acceptance_criteria verify done notes
 
-  id=$(echo "$content" | grep -oP 'id="\K[^"]+' | head -1)
-  wave=$(echo "$content" | grep -oP 'wave="\K[^"]+' | head -1)
-  depends=$(echo "$content" | grep -oP 'depends="\K[^"]+' | head -1)
-  type=$(echo "$content" | grep -oP 'type="\K[^"]+' | head -1)
-  priority=$(echo "$content" | grep -oP 'priority="\K[^"]+' | head -1)
+  id=$(echo "$content" | sed -n 's/id="\([^"]*\)".*/\1/p' | head -1)
+  wave=$(echo "$content" | sed -n 's/wave="\([^"]*\)".*/\1/p' | head -1)
+  depends=$(echo "$content" | sed -n 's/depends="\([^"]*\)".*/\1/p' | head -1)
+  type=$(echo "$content" | sed -n 's/type="\([^"]*\)".*/\1/p' | head -1)
+  priority=$(echo "$content" | sed -n 's/priority="\([^"]*\)".*/\1/p' | head -1)
   title=$(extract_xml_element "$content" "title")
   description=$(extract_xml_element "$content" "description")
   requirements=$(extract_xml_element "$content" "requirements")
@@ -495,7 +495,7 @@ parse_xml_task() {
   local files_json="[]"
   while IFS= read -r file; do
     [[ -n "$file" ]] && files_json=$(echo "$files_json" | jq --arg f "$file" '. += [$f]')
-  done < <(echo "$content" | grep -oP '(?<=<file>)[^<]+')
+  done < <(echo "$content" | sed -n 's/<file>\([^<]*\)/\1/p')
 
   jq -n \
     --arg id "${id:-}" \
@@ -563,7 +563,7 @@ parse_md_task() {
   local files_json="[]"
   while IFS= read -r file; do
     [[ -n "$file" ]] && files_json=$(echo "$files_json" | jq --arg f "$file" '. += [$f]')
-  done < <(echo "$content" | sed -n '/^## Files$/,/^## /p' | grep -oP '`\K[^`]+')
+  done < <(echo "$content" | sed -n '/^## Files$/,/^## /p' | sed -n 's/`\([^`]*\)`/\1/p')
 
   jq -n \
     --arg id "${id:-}" \

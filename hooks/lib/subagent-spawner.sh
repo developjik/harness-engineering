@@ -348,7 +348,7 @@ cleanup_completed_subagents() {
             completed_epoch=$(TZ=UTC date -j -f "%Y-%m-%dT%H:%M:%S" "${completed_at%Z}" +%s 2>/dev/null || echo 0)
             local age=$((now - completed_epoch))
 
-            if [[ $age -gt $max_age_seconds ]]; then
+            if [[ $age -ge $max_age_seconds ]]; then
               rm -rf "$subagent_dir"
               cleaned=$((cleaned + 1))
             fi

@@ -428,7 +428,7 @@ lsp_goto_definition() {
   # 실제 LSP 통신은 복잡하므로 대체 구현
   # grep 기반 정의 검색
   local symbol
-  symbol=$(sed -n "${line}p" "$file_path" | grep -oP '\b[A-Za-z_][A-Za-z0-9_]*\b' | head -1)
+  symbol=$(sed -n "${line}p" "$file_path" | grep -o '[A-Za-z_][A-Za-z0-9_]*' | head -1)
 
   if [[ -z "$symbol" ]]; then
     echo '{"error": "symbol_not_found"}'
@@ -483,7 +483,7 @@ lsp_find_references() {
 
   # 현재 라인에서 심볼 추출
   local symbol
-  symbol=$(sed -n "$((line + 1))p" "$file_path" | grep -oP '\b[A-Za-z_][A-Za-z0-9_]*\b' | head -1)
+  symbol=$(sed -n "$((line + 1))p" "$file_path" | grep -o '[A-Za-z_][A-Za-z0-9_]*' | head -1)
 
   if [[ -z "$symbol" ]]; then
     echo '[]'
@@ -544,7 +544,7 @@ lsp_rename() {
 
   # 현재 심볼 추출
   local old_symbol
-  old_symbol=$(sed -n "$((line + 1))p" "$file_path" | grep -oP '\b[A-Za-z_][A-Za-z0-9_]*\b' | head -1)
+  old_symbol=$(sed -n "$((line + 1))p" "$file_path" | grep -o '[A-Za-z_][A-Za-z0-9_]*' | head -1)
 
   if [[ -z "$old_symbol" ]]; then
     echo '{"error": "symbol_not_found"}'
