@@ -17,32 +17,56 @@ if [[ -f "${SCRIPT_DIR}/logging.sh" ]]; then
 fi
 
 # ============================================================================
-# 에러 코드 정의
+# 에러 코드 정의 (bash 3.2 호환)
 # ============================================================================
 
-declare -A ERROR_CODES=(
-  # 명령어 관련 (E1xx)
-  ["E101"]="DANGEROUS_COMMAND"
-  ["E102"]="COMMAND_SUBSTITUTION"
-  ["E103"]="SYSTEM_DESTRUCTIVE"
-  ["E104"]="PRIVILEGE_ESCALATION"
-  ["E105"]="REMOTE_EXECUTION"
+# 에러 코드 조회 함수 (연관 배열 대신 case 문 사용)
+get_error_code_name() {
+  local code="${1:-}"
+  case "$code" in
+    # 명령어 관련 (E1xx)
+    E101) echo "DANGEROUS_COMMAND" ;;
+    E102) echo "COMMAND_SUBSTITUTION" ;;
+    E103) echo "SYSTEM_DESTRUCTIVE" ;;
+    E104) echo "PRIVILEGE_ESCALATION" ;;
+    E105) echo "REMOTE_EXECUTION" ;;
+    # 파일 경로 관련 (E2xx)
+    E201) echo "PATH_TRAVERSAL" ;;
+    E202) echo "SYSTEM_PATH_ACCESS" ;;
+    E203) echo "SYMLINK_ESCAPE" ;;
+    E204) echo "INVALID_CHARACTERS" ;;
+    E205) echo "OUTSIDE_PROJECT" ;;
+    # 권한 관련 (E3xx)
+    E301) echo "PERMISSION_DENIED" ;;
+    E302) echo "FILE_NOT_WRITABLE" ;;
+    # 기타 (E4xx)
+    E401) echo "SENSITIVE_FILE" ;;
+    E402) echo "FILE_CONFLICT" ;;
+    *) echo "UNKNOWN" ;;
+  esac
+}
 
-  # 파일 경로 관련 (E2xx)
-  ["E201"]="PATH_TRAVERSAL"
-  ["E202"]="SYSTEM_PATH_ACCESS"
-  ["E203"]="SYMLINK_ESCAPE"
-  ["E204"]="INVALID_CHARACTERS"
-  ["E205"]="OUTSIDE_PROJECT"
-
-  # 권한 관련 (E3xx)
-  ["E301"]="PERMISSION_DENIED"
-  ["E302"]="FILE_NOT_WRITABLE"
-
-  # 기타 (E4xx)
-  ["E401"]="SENSITIVE_FILE"
-  ["E402"]="FILE_CONFLICT"
-)
+# 에러 코드 이름으로 코드 조회
+get_error_code_by_name() {
+  local name="${1:-}"
+  case "$name" in
+    DANGEROUS_COMMAND) echo "E101" ;;
+    COMMAND_SUBSTITUTION) echo "E102" ;;
+    SYSTEM_DESTRUCTIVE) echo "E103" ;;
+    PRIVILEGE_ESCALATION) echo "E104" ;;
+    REMOTE_EXECUTION) echo "E105" ;;
+    PATH_TRAVERSAL) echo "E201" ;;
+    SYSTEM_PATH_ACCESS) echo "E202" ;;
+    SYMLINK_ESCAPE) echo "E203" ;;
+    INVALID_CHARACTERS) echo "E204" ;;
+    OUTSIDE_PROJECT) echo "E205" ;;
+    PERMISSION_DENIED) echo "E301" ;;
+    FILE_NOT_WRITABLE) echo "E302" ;;
+    SENSITIVE_FILE) echo "E401" ;;
+    FILE_CONFLICT) echo "E402" ;;
+    *) echo "E999" ;;
+  esac
+}
 
 # ============================================================================
 # 에러 메시지 생성 함수

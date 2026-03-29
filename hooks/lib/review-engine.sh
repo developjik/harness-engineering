@@ -289,7 +289,7 @@ verify_spec_compliance() {
   # 4. 종합 점수 계산 (가중 평균)
   # 파일: 40%, API: 30%, FR: 30%
   local overall_score
-  overall_score=$(awk "BEGIN {printf \"%.2f\", ($file_score * 0.4) + ($api_score * 0.3) + ($fr_score * 0.3)}")
+  overall_score=$(awk -v fs="$file_score" -v as="$api_score" -v frs="$fr_score" 'BEGIN {printf "%.2f", (fs * 0.4) + (as * 0.3) + (frs * 0.3)}')
 
   # 판정
   local passed="false"
@@ -495,7 +495,7 @@ run_two_stage_review() {
   spec_score=$(echo "$spec_result" | jq -r '.overall_score // 0')
 
   local spec_pct
-  spec_pct=$(awk "BEGIN {printf \"%.0f\", $spec_score * 100}")
+  spec_pct=$(awk -v score="$spec_score" 'BEGIN {printf "%.0f", score * 100}')
   echo "  Score: ${spec_pct}%"
   echo ""
 
@@ -518,7 +518,7 @@ run_two_stage_review() {
     fi
 
     local quality_pct
-    quality_pct=$(awk "BEGIN {printf \"%.0f\", $quality_score * 100}")
+    quality_pct=$(awk -v score="$quality_score" 'BEGIN {printf "%.0f", score * 100}')
     echo "  Score: ${quality_pct}%"
     echo ""
   else
@@ -531,7 +531,7 @@ run_two_stage_review() {
   # ========================================
   # 가중 평균: 스펙 60%, 품질 40%
   local combined_score
-  combined_score=$(awk "BEGIN {printf \"%.2f\", ($spec_score * 0.6) + ($quality_score * 0.4)}")
+  combined_score=$(awk -v ss="$spec_score" -v qs="$quality_score" 'BEGIN {printf "%.2f", (ss * 0.6) + (qs * 0.4)}')
 
   local passed="false"
   if awk "BEGIN {exit !($combined_score >= $REVIEW_PASS_THRESHOLD)}"; then
@@ -573,9 +573,9 @@ run_two_stage_review() {
   echo ""
 
   local spec_pct quality_pct combined_pct
-  spec_pct=$(awk "BEGIN {printf \"%.0f\", $spec_score * 100}")
-  quality_pct=$(awk "BEGIN {printf \"%.0f\", $quality_score * 100}")
-  combined_pct=$(awk "BEGIN {printf \"%.0f\", $combined_score * 100}")
+  spec_pct=$(awk -v score="$spec_score" 'BEGIN {printf "%.0f", score * 100}')
+  quality_pct=$(awk -v score="$quality_score" 'BEGIN {printf "%.0f", score * 100}')
+  combined_pct=$(awk -v score="$combined_score" 'BEGIN {printf "%.0f", score * 100}')
 
   echo "  Stage 1 (Spec Compliance):  ${spec_pct}%"
   echo "  Stage 2 (Code Quality):     ${quality_pct}%"
@@ -638,14 +638,14 @@ estimate_quality_score() {
     local lint_errors
     lint_errors=$(cd "$project_root" && npm run lint 2>&1 | grep -c "error" || echo 0)
     if [[ "$lint_errors" -gt 0 ]]; then
-      score=$(awk "BEGIN {printf \"%.2f\", $score - ($lint_errors * 0.02)}")
+      score=$(awk -v s="$score" -v errs="$lint_errors" 'BEGIN {printf "%.2f", s - (errs * 0.02)}')
     fi
   fi
 
   # 점수 범위 제한
-  if awk "BEGIN {exit !($score < 0)}"; then
+  if awk -v s="$score" 'BEGIN {exit !(s < 0)}'; then
     score=0
-  elif awk "BEGIN {exit !($score > 1)}"; then
+  elif awk -v s="$score" 'BEGIN {exit !(s > 1)}'; then
     score=1
   fi
 
@@ -663,7 +663,7 @@ calculate_match_rate() {
   quality_score=$(echo "$quality_result" | jq -r '.overall_score // 1')
 
   # 가중 평균
-  awk "BEGIN {printf \"%.2f\", ($spec_score * 0.6) + ($quality_score * 0.4)}"
+  awk -v ss="$spec_score" -v qs="$quality_score" 'BEGIN {printf "%.2f", (ss * 0.6) + (qs * 0.4)}'
 }
 
 # 리뷰 히스토리 조회

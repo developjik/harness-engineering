@@ -314,7 +314,7 @@ EOF
   echo "|--------|-------|" >> "$dashboard_file"
   echo "| Total Skills | $total_skills |" >> "$dashboard_file"
   echo "| Total Executions | $total_exec |" >> "$dashboard_file"
-  echo "| Overall Success Rate | $(awk "BEGIN {printf \"%.1f%%\", $overall_rate * 100}") |" >> "$dashboard_file"
+  echo "| Overall Success Rate | $(awk -v rate="$overall_rate" 'BEGIN {printf "%.1f%%", rate * 100}') |" >> "$dashboard_file"
   echo "" >> "$dashboard_file"
 
   # 스킬별 상세
@@ -327,12 +327,12 @@ EOF
   echo "$stats" | jq -r '.skills[] | select(.total_executions > 0) | [.skill, .total_executions, .success_rate, .avg_duration_ms] | @tsv' | \
     while IFS=$'\t' read -r skill exec rate dur; do
       local status_emoji pct
-      pct=$(awk "BEGIN {printf \"%.1f\", $rate * 100}")
-      dur_ms=$(awk "BEGIN {printf \"%.0f ms\", $dur}")
+      pct=$(awk -v rate="$rate" 'BEGIN {printf "%.1f", rate * 100}')
+      dur_ms=$(awk -v dur="$dur" 'BEGIN {printf "%.0f ms", dur}')
 
-      if awk "BEGIN {exit !($rate >= 0.9)}"; then
+      if awk -v rate="$rate" 'BEGIN {exit !(rate >= 0.9)}'; then
         status_emoji="✅"
-      elif awk "BEGIN {exit !($rate >= 0.7)}"; then
+      elif awk -v rate="$rate" 'BEGIN {exit !(rate >= 0.7)}'; then
         status_emoji="⚠️"
       else
         status_emoji="❌"
@@ -402,12 +402,12 @@ calculate_skill_score() {
     elif [[ "$avg_duration" -ge 10000 ]]; then
       time_score=0.0
     else
-      time_score=$(awk "BEGIN {printf \"%.2f\", 1 - ($avg_duration - 1000) / 9000}")
+      time_score=$(awk -v dur="$avg_duration" 'BEGIN {printf "%.2f", 1 - (dur - 1000) / 9000}')
     fi
   fi
 
   local final_score
-  final_score=$(awk "BEGIN {printf \"%.2f\", ($success_rate * 0.7) + ($time_score * 0.3)}")
+  final_score=$(awk -v sr="$success_rate" -v ts="$time_score" 'BEGIN {printf "%.2f", (sr * 0.7) + (ts * 0.3)}')
 
   echo "$final_score"
 }

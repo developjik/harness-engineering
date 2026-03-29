@@ -6,6 +6,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=hooks/common.sh
 source "${SCRIPT_DIR}/common.sh"
 
+# 필요한 모듈 로드
+_harness_load_module "automation-level"
+_harness_load_module "context-rot"
+_harness_load_module "cleanup"
+
 PAYLOAD=$(cat)
 HARNESS_DIR=$(harness_runtime_dir "$PAYLOAD")
 LOG_DIR="${HARNESS_DIR}/logs"

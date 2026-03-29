@@ -16,35 +16,31 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/lib"
 
 # ============================================================================
-# 지연 초기화 시스템
+# 지연 초기화 시스템 (bash 3.2 호환)
 # ============================================================================
 
-# 모듈 로드 상태 추적
-declare -A _HARNESS_MODULE_LOADED=(
-  [json-utils]=false
-  [logging]=false
-  [validation]=false
-  [state-machine]=false
-  [subagent-spawner]=false
-  [crash-recovery]=false
-  [browser-testing]=false
-  [feature-registry]=false
-  [context-rot]=false
-  [automation-level]=false
-  [test-runner]=false
-  [verification-classes]=false
-  [review-engine]=false
-  [skill-evaluation]=false
-  [wave-executor]=false
-  [hash-anchored-edit]=false
-  [cleanup]=false
-  [skill-chain]=false
-  [worktree]=false
-  [feature-sync]=false
-  [lsp-tools]=false
-  [browser-controller]=false
-  [task-format]=false
-)
+# 모듈 로드 상태 추적 (연관 배열 대신 문자열 사용)
+# bash 3.2는 declare -A를 지원하지 않으므로 콜론으로 구분된 문자열 사용
+_HARNESS_LOADED_MODULES=""
+
+# 모듈이 로드되었는지 확인
+_harness_is_module_loaded() {
+  local module_name="${1:-}"
+  case ":${_HARNESS_LOADED_MODULES}:" in
+    *":${module_name}:"*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+# 모듈을 로드됨으로 표시
+_harness_mark_module_loaded() {
+  local module_name="${1:-}"
+  if [ -z "$_HARNESS_LOADED_MODULES" ]; then
+    _HARNESS_LOADED_MODULES="${module_name}"
+  else
+    _HARNESS_LOADED_MODULES="${_HARNESS_LOADED_MODULES}:${module_name}"
+  fi
+}
 
 # 모듈 로드 함수
 _harness_load_module() {
@@ -52,7 +48,7 @@ _harness_load_module() {
   local module_file="${LIB_DIR}/${module_name}.sh"
 
   # 이미 로드되었으면 종료
-  if [[ "${_HARNESS_MODULE_LOADED[$module_name]}" == "true" ]]; then
+  if _harness_is_module_loaded "$module_name"; then
     return 0
   fi
 
@@ -63,8 +59,9 @@ _harness_load_module() {
   fi
 
   # 모듈 source
+  # shellcheck source=hooks/lib/*.sh
   source "$module_file"
-  _HARNESS_MODULE_LOADED[$module_name]=true
+  _harness_mark_module_loaded "$module_name"
 }
 
 # ============================================================================
