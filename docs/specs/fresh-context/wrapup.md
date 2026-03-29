@@ -97,8 +97,8 @@
 
 ## 5. 문서 업데이트 내역
 
-- [x] `README.md`: Context Rot 섹션 추가 (예정)
-- [x] `CHANGELOG.md`: v1.2.0 릴리즈 노트 작성 (예정)
+- [x] `README.md`: Context Rot 섹션 반영
+- [x] `CHANGELOG.md`: v1.2.0 릴리즈 노트 반영
 - [x] `docs/analysis/features.md`: fresh-context 등록
 - [x] `docs/templates/context/README.md`: 사용 가이드 작성
 

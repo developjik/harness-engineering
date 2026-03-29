@@ -326,11 +326,14 @@ harness-engineering/
 │   │   ├── browser-testing.sh      # P1-4: 브라우저 테스트
 │   │   ├── hash-anchored-edit.sh   # P2-1: 해시 앵커 에디트
 │   │   └── wave-executor.sh        # P2-2: 웨이브 실행
-│   └── __tests__/                  # 훅 테스트 (190+ tests)
+│   └── __tests__/                  # 훅 테스트 (19 suites / 224 cases)
 ├── scripts/                        # 검증 스크립트
 ├── docs/                           # 문서
-│   ├── ARCHITECTURE.md
-│   ├── QUICKSTART.md
+│   ├── README.md
+│   ├── guides/
+│   ├── reference/
+│   ├── analysis/
+│   ├── decisions/
 │   ├── templates/
 │   └── specs/                      # feature 산출물
 └── README.md
@@ -403,13 +406,15 @@ cat .harness/logs/context-rot.jsonl
 
 ## 문서
 
-- [아키텍처](docs/ARCHITECTURE.md) — PDCA 흐름, 에이전트-스킬 관계, 훅 라이프사이클
-- [프로젝트 분석](docs/PROJECT-ANALYSIS.md) — 시스템 구조 ASCII 다이어그램
-- [빠른 시작](docs/QUICKSTART.md) — 5분 만에 시작하기
-- [산출물 규약](docs/ARTIFACT-CONVENTION.md) — `docs/specs/<feature-slug>/` 기반 SSOT 규칙
-- [스킬 작성 가이드](docs/SKILL-WRITING-GUIDE.md) — 커스텀 스킬 만들기
-- [에이전트 작성 가이드](docs/AGENT-WRITING-GUIDE.md) — 커스텀 에이전트 만들기
-- [훅 작성 가이드](docs/HOOK-WRITING-GUIDE.md) — 커스텀 훅 만들기
+- [문서 인덱스](docs/README.md) — 전체 문서 맵과 빠른 링크
+- [아키텍처](docs/reference/architecture.md) — PDCA 흐름, 에이전트-스킬 관계, 훅 라이프사이클
+- [프로젝트 분석](docs/analysis/project-analysis.md) — 시스템 구조 ASCII 다이어그램
+- [빠른 시작](docs/guides/quickstart.md) — 5분 만에 시작하기
+- [사용 가이드](docs/guides/usage.md) — 명령어, 단계별 사용 흐름
+- [산출물 규약](docs/reference/artifact-convention.md) — `docs/specs/<feature-slug>/` 기반 SSOT 규칙
+- [스킬 작성 가이드](docs/guides/skill-writing.md) — 커스텀 스킬 만들기
+- [에이전트 작성 가이드](docs/guides/agent-writing.md) — 커스텀 에이전트 만들기
+- [훅 작성 가이드](docs/guides/hook-writing.md) — 커스텀 훅 만들기
 
 ## 영감을 받은 프로젝트
 

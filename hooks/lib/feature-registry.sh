@@ -5,21 +5,28 @@
 # DEPENDENCIES: json-utils.sh, logging.sh
 
 # 기능 레지스트리 파일 경로 조회
-# docs/features.md 우선, 없으면 docs/analysis/features.md 사용
+# 기본 경로는 docs/analysis/features.md 이며, 레거시 docs/features.md도 읽는다.
 feature_registry_file() {
   local project_root="${1:-}"
-
-  if [[ -f "${project_root}/docs/features.md" ]]; then
-    printf '%s/docs/features.md\n' "$project_root"
-    return 0
-  fi
 
   if [[ -f "${project_root}/docs/analysis/features.md" ]]; then
     printf '%s/docs/analysis/features.md\n' "$project_root"
     return 0
   fi
 
-  printf '%s/docs/features.md\n' "$project_root"
+  if [[ -f "${project_root}/docs/features.md" ]]; then
+    printf '%s/docs/features.md\n' "$project_root"
+    return 0
+  fi
+
+  printf '%s/docs/analysis/features.md\n' "$project_root"
+}
+
+feature_registry_exists() {
+  local project_root="${1:-}"
+  local features_file
+  features_file=$(feature_registry_file "$project_root")
+  [[ -f "$features_file" ]]
 }
 
 # ============================================================================
@@ -30,14 +37,7 @@ feature_registry_file() {
 # Usage: check_feature_registry <project_root>
 check_feature_registry() {
   local project_root="${1:-}"
-  local features_file
-  features_file=$(feature_registry_file "$project_root")
-
-  if [ ! -f "$features_file" ]; then
-    printf '[WARNING] Feature registry not found: %s\n' "$features_file" >&2
-    return 1
-  fi
-  return 0
+  feature_registry_exists "$project_root"
 }
 
 # 기능 상태 조회
@@ -138,8 +138,7 @@ update_feature_status() {
   features_file=$(feature_registry_file "$project_root")
 
   if [ ! -f "$features_file" ]; then
-    printf '[WARNING] Feature registry not found, cannot update status\n' >&2
-    return 1
+    return 0
   fi
 
   # 상태 업데이트 (sed 사용)
@@ -167,8 +166,7 @@ register_feature() {
   features_file=$(feature_registry_file "$project_root")
 
   if [ ! -f "$features_file" ]; then
-    printf '[WARNING] Feature registry not found, cannot register feature\n' >&2
-    return 1
+    return 0
   fi
 
   # 이미 등록된 기능인지 확인

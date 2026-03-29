@@ -1,8 +1,21 @@
 # P1 Enhancement — High Priority 구현 계획
 
+> Status: Partial
+>
+> 이 문서는 초기 구현 계획서입니다. 현재 저장소에는 `review-engine.sh`, `skill-evaluation.sh`, `crash-recovery.sh`, `browser-testing.sh`가 존재합니다. 다만 리뷰 엔진의 정확도와 서브에이전트 실행 연계는 후속 이슈에서 추가 개선 예정입니다.
+
 ## 개요
 
 P0 Foundation이 완료된 후, P1은 실무에서 즉시 활용 가능한 고급 기능들을 추가합니다.
+
+## 현재 구현 스냅샷
+
+| Area | Current Status | Notes |
+|------|----------------|-------|
+| P1-1 2단계 리뷰 시스템 | Partial | 모듈과 테스트는 존재하지만 판정 신뢰도 보강 필요 |
+| P1-2 Skill 평가 프레임워크 | Implemented | 메트릭 기록과 대시보드 함수 존재 |
+| P1-3 크래시 복구 & 포렌식 | Implemented | stuck 감지와 recovery 함수 존재 |
+| P1-4 브라우저 테스트 통합 | Implemented | 브라우저 테스트 모듈과 테스트 스위트 존재 |
 
 ---
 

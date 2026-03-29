@@ -7,6 +7,8 @@
 | [Quickstart](guides/quickstart.md) | 5분 내 설정 완료 가이드 |
 | [Usage](guides/usage.md) | 상세 사용법 및 명령어 |
 | [Architecture](reference/architecture.md) | 시스템 아키텍처 개요 |
+| [Project Analysis](analysis/project-analysis.md) | 현재 구조와 훅/스킬 분석 |
+| [Artifact Convention](reference/artifact-convention.md) | 산출물 저장 규약 |
 
 ---
 
@@ -46,12 +48,12 @@
 
 기능별 기획/설계 문서 (PDCA 사이클)
 
-| Feature | Plan | Design | Wrap-up |
-|---------|------|--------|---------|
-| automation-levels | [plan](specs/automation-levels/plan.md) | [design](specs/automation-levels/design.md) | [wrapup](specs/automation-levels/wrapup.md) |
-| fresh-context | [plan](specs/fresh-context/plan.md) | [design](specs/fresh-context/design.md) | [wrapup](specs/fresh-context/wrapup.md) |
-| p0-foundation | [plan](specs/p0-foundation/plan.md) | - | - |
-| p1-enhancement | [plan](specs/p1-enhancement/plan.md) | - | - |
+| Feature | Plan | Design | Wrap-up | Status | Notes |
+|---------|------|--------|---------|--------|-------|
+| automation-levels | [plan](specs/automation-levels/plan.md) | [design](specs/automation-levels/design.md) | [wrapup](specs/automation-levels/wrapup.md) | Implemented | 자동화 레벨 관련 문서와 구현이 연결되어 있음 |
+| fresh-context | [plan](specs/fresh-context/plan.md) | [design](specs/fresh-context/design.md) | [wrapup](specs/fresh-context/wrapup.md) | Implemented | Context Rot 감지/로깅/상태 추적 구현 완료 |
+| p0-foundation | [plan](specs/p0-foundation/plan.md) | - | - | Partial | 핵심 모듈은 존재하지만 실행 통합과 완성도 보강이 남아 있음 |
+| p1-enhancement | [plan](specs/p1-enhancement/plan.md) | - | - | Partial | 리뷰/복구/브라우저 테스트 모듈은 있으나 일부는 추가 하드닝 필요 |
 
 ## Decisions
 

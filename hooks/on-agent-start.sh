@@ -75,17 +75,11 @@ if [[ "$AGENT_NAME" == *"engineer"* ]] && [ "$PHASE" = "implement" ]; then
     if ! check_dependency_conflicts "$PROJECT_ROOT" "$CURRENT_FEATURE"; then
       echo "[$TIMESTAMP] DEPENDENCY_CHECK FAILED for feature=$CURRENT_FEATURE" >> "${LOG_DIR}/dependencies.log"
       echo "[WARNING] Some dependencies for feature '$CURRENT_FEATURE' are not yet completed." >&2
-      echo "[WARNING] Please ensure all prerequisite features are marked as 'Completed' in docs/features.md" >&2
+      if feature_registry_exists "$PROJECT_ROOT"; then
+        echo "[WARNING] Please ensure all prerequisite features are marked as 'Completed' in $(feature_registry_file "$PROJECT_ROOT")" >&2
+      fi
     fi
   fi
-fi
-
-# ============================================================================
-# 기능 레지스트리 존재 확인
-# ============================================================================
-if ! check_feature_registry "$PROJECT_ROOT"; then
-  echo "[$TIMESTAMP] REGISTRY_CHECK FAILED" >> "${LOG_DIR}/registry.log"
-  echo "[INFO] Feature registry (docs/features.md) not found. Creating or updating it is recommended." >&2
 fi
 
 # ============================================================================
