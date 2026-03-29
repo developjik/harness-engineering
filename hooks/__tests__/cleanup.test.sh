@@ -109,15 +109,25 @@ test_register_lock_file() {
 test_create_temp_file() {
   echo "Testing create_temp_file..."
 
+  # Note: Command substitution ($()) runs in a subshell, so _HARNESS_TEMP_FILES
+  # won't be visible in parent shell. This is expected bash behavior.
+  # Real usage should call create_temp_file directly or use register_temp_file separately.
+
+  # Test 1: File creation works
   local temp_file
   temp_file=$(create_temp_file "test" "$TEST_DIR")
 
   assert_file_exists "$temp_file" "Temp file created"
 
-  # Check it's registered
+  # Test 2: Direct registration works (not via subshell)
+  local direct_temp="${TEST_DIR}/direct_test.txt"
+  touch "$direct_temp"
+  _HARNESS_TEMP_FILES=()
+  register_temp_file "$direct_temp"
+
   local found=false
   for registered in "${_HARNESS_TEMP_FILES[@]}"; do
-    if [[ "$registered" == "$temp_file" ]]; then
+    if [[ "$registered" == "$direct_temp" ]]; then
       found=true
       break
     fi
@@ -126,13 +136,13 @@ test_create_temp_file() {
   ((tests_run++))
   if $found; then
     ((tests_passed++))
-    echo "  ✓ Temp file auto-registered"
+    echo "  ✓ register_temp_file works correctly"
   else
     ((tests_failed++))
-    echo "  ✗ Temp file auto-registered"
+    echo "  ✗ register_temp_file works correctly"
   fi
 
-  rm -f "$temp_file"
+  rm -f "$temp_file" "$direct_temp"
 }
 
 test_acquire_lock() {

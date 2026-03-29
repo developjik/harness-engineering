@@ -127,16 +127,18 @@ _harness_cleanup_on_signal() {
 # ============================================================================
 
 # 안전한 임시 파일 생성
-# Usage: create_temp_file [prefix] [directory]
+# Usage: temp_file=$(create_temp_file [prefix] [directory])
+#   그 후 register_temp_file "$temp_file" 를 직접 호출하여 등록
+#   서브셸 문제 해결: 파일 생성과 등록을 분리
 create_temp_file() {
   local prefix="${1:-harness}"
   local directory="${2:-${TMPDIR:-/tmp}}"
   local temp_file
 
+  # 파일만 생성하고 경로 반환
   temp_file=$(mktemp "${directory}/${prefix}.XXXXXX" 2>/dev/null || echo "")
 
   if [ -n "$temp_file" ] && [ -f "$temp_file" ]; then
-    register_temp_file "$temp_file"
     echo "$temp_file"
     return 0
   else
