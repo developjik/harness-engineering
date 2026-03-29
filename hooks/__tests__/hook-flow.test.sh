@@ -52,16 +52,18 @@ test_feature_context_flows_across_hooks() {
   printf '{"cwd":"%s","agent_name":"strategist"}\n' "$test_dir" | \
     bash hooks/on-agent-start.sh >/dev/null 2>/dev/null
 
-  local cached_feature cached_phase state_feature state_phase
+  local cached_feature cached_phase state_feature state_phase registry_log
   cached_feature=$(cat "${test_dir}/.harness/state/current-feature.txt" 2>/dev/null || true)
   cached_phase=$(cat "${test_dir}/.harness/state/pdca-phase.txt" 2>/dev/null || true)
   state_feature=$(jq -r '.feature_slug // empty' "${test_dir}/.harness/engine/state.json" 2>/dev/null || true)
   state_phase=$(jq -r '.phase // empty' "${test_dir}/.harness/engine/state.json" 2>/dev/null || true)
+  registry_log=$(cat "${test_dir}/.harness/logs/registry.log" 2>/dev/null || true)
 
   if assert_equals "hook-flow" "$cached_feature" "Feature cache should be inferred from docs path" && \
      assert_equals "hook-flow" "$state_feature" "State feature should match" && \
      assert_equals "plan" "$cached_phase" "Phase cache should move with agent" && \
-     assert_equals "plan" "$state_phase" "State phase should match"; then
+     assert_equals "plan" "$state_phase" "State phase should match" && \
+     assert_equals "" "$registry_log" "Missing feature registry should not be treated as a failure"; then
     pass "test_feature_context_flows_across_hooks"
   else
     fail "test_feature_context_flows_across_hooks"

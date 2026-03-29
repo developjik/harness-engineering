@@ -29,7 +29,7 @@
 | `docs/specs/automation-levels/plan.md` | 요구사항 문서 (176줄) |
 | `docs/specs/automation-levels/design.md` | 설계 문서 (386줄) |
 | `docs/templates/automation-config.md` | 설정 가이드 (70줄) |
-| `docs/BENCHMARK-ANALYSIS.md` | 벤치마크 분석 문서 |
+| `docs/analysis/benchmark-analysis.md` | 벤치마크 분석 문서 |
 
 ### 🟡 수정된 파일
 

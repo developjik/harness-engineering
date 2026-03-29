@@ -1,8 +1,20 @@
 # P0 Foundation Improvements - Implementation Plan
 
+> Status: Partial
+>
+> 이 문서는 초기 구현 계획서입니다. 현재 저장소에는 `test-runner.sh`, `verification-classes.sh`, `subagent-spawner.sh`, `state-machine.sh`가 모두 존재하지만, 서브에이전트 실행 계약과 일부 통합 품질은 후속 이슈에서 계속 보강 중입니다.
+
 ## Overview
 
 이 문서는 harness-engineering 프로젝트의 P0 (Critical) 개선사항에 대한 상세 구현 계획입니다.
+
+## Current Implementation Snapshot
+
+| Area | Current Status | Notes |
+|------|----------------|-------|
+| P0-1 테스트 실행 통합 | Implemented | 다중 프레임워크 감지와 테스트 실행 함수 존재 |
+| P0-2 서브에이전트 스포닝 | Partial | 상태 파일/컨텍스트 생성은 구현, 실제 실행 브리지 보강 필요 |
+| P0-3 상태 머신 엔진 | Implemented | 상태 전이, 스냅샷, 롤백 관련 모듈 존재 |
 
 | ID | 개선사항 | 노력 | 출처 | 우선순위 |
 |----|---------|-----|------|---------|

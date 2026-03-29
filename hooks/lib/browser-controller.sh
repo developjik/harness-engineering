@@ -20,9 +20,9 @@ set -euo pipefail
 # 상수
 # ============================================================================
 
-readonly BROWSER_STATE_DIR=".harness/browser"
-readonly BROWSER_SESSION_FILE="${BROWSER_STATE_DIR}/session.json"
-readonly BROWSER_LOG_FILE="${BROWSER_STATE_DIR}/browser.log"
+readonly BROWSER_STATE_SUBDIR=".harness/browser"
+readonly BROWSER_SESSION_FILE="${BROWSER_STATE_SUBDIR}/session.json"
+readonly BROWSER_LOG_FILE="${BROWSER_STATE_SUBDIR}/browser.log"
 readonly BROWSER_TIMEOUT=30000          # 30초
 readonly BROWSER_PAGE_TIMEOUT=60000    # 60초
 readonly BROWSER_SCRIPT_TIMEOUT=10000  # 10초
@@ -35,7 +35,7 @@ readonly BROWSER_STATE_ENV_VAR="HARNESS_BROWSER_STATE_DIR"
 # 브라우저 상태 초기화
 _init_browser_state() {
   local project_root="${1:-$(pwd)}"
-  local state_dir="${project_root}/${BROWSER_STATE_DIR}"
+  local state_dir="${project_root}/${BROWSER_STATE_SUBDIR}"
 
   mkdir -p "$state_dir"
 
@@ -62,7 +62,7 @@ _update_browser_state() {
 
   _init_browser_state "$project_root"
 
-  local state_file="${project_root}/${BROWSER_STATE_DIR}/session.json"
+  local state_file="${project_root}/${BROWSER_STATE_SUBDIR}/session.json"
 
   if [[ -n "$key" ]] && command -v jq &>/dev/null; then
     local tmp_file="${state_file}.tmp"
@@ -79,7 +79,7 @@ _get_browser_state() {
 
   _init_browser_state "$project_root"
 
-  local state_file="${project_root}/${BROWSER_STATE_DIR}/session.json"
+  local state_file="${project_root}/${BROWSER_STATE_SUBDIR}/session.json"
 
   if [[ -n "$key" ]]; then
     jq -r ".$key // null" "$state_file" 2>/dev/null || echo "null"
@@ -120,14 +120,14 @@ browser_connect() {
     return 1
   fi
 
-  if ! node -e "require('playwright')" >/dev/null 2>&1; then
+  if ! (cd "$project_root" && node -e "require('playwright')") >/dev/null 2>&1; then
     echo '{"success": false, "error": "playwright_not_installed"}'
     return 1
   fi
 
   _init_browser_state "$project_root"
 
-  local state_dir="${project_root}/${BROWSER_STATE_DIR}"
+  local state_dir="${project_root}/${BROWSER_STATE_SUBDIR}"
   local script_file="${state_dir}/connect.js"
 
   # Playwright 연결 스크립트 생성
@@ -247,7 +247,7 @@ SCRIPT
 browser_disconnect() {
   local project_root="${1:-$(pwd)}"
 
-  local state_dir="${project_root}/${BROWSER_STATE_DIR}"
+  local state_dir="${project_root}/${BROWSER_STATE_SUBDIR}"
   local script_file="${state_dir}/disconnect.js"
 
   # 종료 스크립트 생성
@@ -452,7 +452,7 @@ browser_screenshot() {
   local filename="${1:-screenshot_$(date +%Y%m%d_%H%M%S).png}"
   local project_root="${2:-$(pwd)}"
 
-  local state_dir="${project_root}/${BROWSER_STATE_DIR}"
+  local state_dir="${project_root}/${BROWSER_STATE_SUBDIR}"
   local screenshot_path="${state_dir}/screenshots/${filename}"
 
   mkdir -p "$(dirname "$screenshot_path")"
@@ -707,7 +707,7 @@ _browser_action() {
   local action="${2:-}"
   local params="${3:-}"
 
-  local state_dir="${project_root}/${BROWSER_STATE_DIR}"
+  local state_dir="${project_root}/${BROWSER_STATE_SUBDIR}"
   local script_file="${state_dir}/action.js"
 
   # 액션 스크립트 생성
@@ -991,7 +991,7 @@ browser_status() {
   local project_root="${1:-$(pwd)}"
 
   _init_browser_state "$project_root"
-  cat "${project_root}/${BROWSER_STATE_DIR}/session.json"
+  cat "${project_root}/${BROWSER_STATE_SUBDIR}/session.json"
 }
 
 # browser_is_connected — 연결 여부 확인
@@ -1108,12 +1108,12 @@ browser_debug() {
   echo ""
 
   echo "Project Root: $project_root"
-  echo "State Directory: ${project_root}/${BROWSER_STATE_DIR}"
+  echo "State Directory: ${project_root}/${BROWSER_STATE_SUBDIR}"
   echo ""
 
-  if [[ -f "${project_root}/${BROWSER_STATE_DIR}/session.json" ]]; then
+  if [[ -f "${project_root}/${BROWSER_STATE_SUBDIR}/session.json" ]]; then
     echo "Session State:"
-    jq '.' "${project_root}/${BROWSER_STATE_DIR}/session.json"
+    jq '.' "${project_root}/${BROWSER_STATE_SUBDIR}/session.json"
   else
     echo "No session file found"
   fi

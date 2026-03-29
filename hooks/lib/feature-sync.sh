@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # feature-sync.sh — 기능 레지스트리 자동 동기화
-# PDCA 단계 변경 시 docs/features.md 자동 업데이트
+# PDCA 단계 변경 시 feature registry 자동 업데이트
 #
 # DEPENDENCIES: feature-registry.sh, logging.sh
 
@@ -16,7 +16,7 @@ source "${FEATURE_SYNC_LIB_DIR}/phase-transition.sh"
 # PDCA 단계 → 상태 매핑
 # ============================================================================
 
-# PDCA 단계를 features.md 상태로 변환
+# PDCA 단계를 feature registry 상태로 변환
 # Usage: pdca_phase_to_status <phase>
 pdca_phase_to_status() {
   local phase="${1:-}"
@@ -60,7 +60,6 @@ sync_feature_registry() {
   features_file=$(feature_registry_file "$project_root")
 
   if [ ! -f "$features_file" ]; then
-    printf '[INFO] Feature registry not found: %s\n' "$features_file" >&2
     return 0
   fi
 
