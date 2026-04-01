@@ -24,6 +24,8 @@
 - agent는 필요한 최소 권한만 가져야 합니다.
 - 문서 작성 agent와 코드 수정 agent를 분리합니다.
 
+현재 스캐폴드 기준으로는 agent contract와 lifecycle hook matcher는 구현되어 있지만, 상위 runner가 각 skill에서 agent를 자동 spawn하고 handoff까지 수행하는 단계는 아직 남아 있습니다.
+
 ## Agent 목록
 
 `colo-fe-flow`는 아래 5개 agent를 기준으로 합니다.

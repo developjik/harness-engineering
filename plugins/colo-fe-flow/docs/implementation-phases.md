@@ -84,9 +84,12 @@
 - `hooks/lib/cache.sh`
 - `hooks/lib/log.sh`
 - `hooks/lib/routing.sh`
+- `hooks/lib/hook-runtime.sh`
 - `hooks/lib/approval.sh`
 - `hooks/lib/worktree.sh`
 - `hooks/lib/verification.sh`
+- `hooks/lib/dependency-check.sh`
+- `hooks/lib/utility.sh`
 - 필요 시 `hooks/lib/common.sh`
 
 ### 이 단계에서 해결할 것

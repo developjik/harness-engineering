@@ -36,5 +36,8 @@ if require_declared_mcp_servers "$tmp_dir" >/dev/null 2>&1; then
   fail "expected required servers check to fail when figma is missing"
 fi
 
-echo "dependency-check.test.sh passed"
+rm -f "$tmp_dir/.mcp.json"
 
+require_declared_mcp_servers "$tmp_dir" || fail "expected plugin-level .mcp.json fallback to satisfy required servers"
+
+echo "dependency-check.test.sh passed"

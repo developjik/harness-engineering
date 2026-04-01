@@ -4,6 +4,14 @@
 
 `route-workflow`의 상세 계약은 [route-workflow-contract.md](./route-workflow-contract.md) 를 기준으로 봅니다.
 
+## Current Scaffold Status
+
+아래 Main Flow는 목표 workflow를 설명합니다. 현재 저장소의 스캐폴드는 이 흐름을 모두 자동 연결한 상태는 아닙니다.
+
+- 현재 `route-workflow`는 다음 skill을 계산해서 JSON으로 반환합니다.
+- 현재 bootstrap, planning chain, execution loop는 `hooks/lib/*.sh` helper 중심으로 먼저 구현되어 있습니다.
+- 현재 skill 간 실제 end-to-end 자동 handoff와 agent orchestration runner는 아직 남아 있습니다.
+
 ## Main Flow
 
 ```mermaid
@@ -55,11 +63,13 @@ flowchart TD
 
 ## Intent
 
-- Entry point is always `route-workflow`.
+- 목표 runtime의 entry point는 `route-workflow`입니다.
 - Work starts from Jira and is enriched by Confluence, Figma, and the local codebase.
 - `clarify -> plan -> design -> implement -> check -> iterate -> sync-docs` is enforced.
 - Stage jumping is blocked.
 - `done` is forbidden before verification and local docs sync.
+
+현재 수동 검증이나 테스트에서는 helper를 직접 source 해서 각 단계를 따로 확인할 수 있습니다.
 
 ## Agents
 

@@ -3,8 +3,6 @@
 LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./approval.sh
 source "$LIB_DIR/approval.sh"
-# shellcheck source=./dependency-check.sh
-source "$LIB_DIR/dependency-check.sh"
 # shellcheck source=./verification.sh
 source "$LIB_DIR/verification.sh"
 
@@ -25,7 +23,6 @@ CFF_ROUTING_ACTIONS=(
 )
 
 CFF_ROUTING_REASON_CODES=(
-  missing_required_mcp
   unknown_action
   no_ticket_context
   ticket_switch_required
@@ -180,7 +177,6 @@ cff_routing_reason_message() {
   local reason_code="$1"
 
   case "$reason_code" in
-    missing_required_mcp) printf '필수 MCP 선언이 없어 route-workflow를 진행할 수 없음\n' ;;
     unknown_action) printf '요청 의도를 내부 action으로 정규화하지 못함\n' ;;
     no_ticket_context) printf '현재 작업할 ticket context가 없어 다음 단계를 결정할 수 없음\n' ;;
     ticket_switch_required) printf '다른 ticket으로 전환한 뒤 진행해야 함\n' ;;
@@ -435,25 +431,6 @@ cff_routing_route_result_json() {
   requested_ticket="$(cff_routing_extract_requested_ticket "$raw_request")"
   active_ticket="$(cff_state_get_active_ticket "$project_root")"
   resolved_ticket="${requested_ticket:-$active_ticket}"
-
-  if ! require_declared_mcp_servers "$project_root" >/dev/null 2>&1; then
-    decision="block"
-    reason_code="missing_required_mcp"
-    requires_user_input="false"
-    reason="$(cff_routing_reason_message "$reason_code")"
-    cff_routing_emit_result_json \
-      "$raw_request" \
-      "${resolved_action:-__CFF_NULL__}" \
-      "${requested_ticket:-__CFF_NULL__}" \
-      "${resolved_ticket:-__CFF_NULL__}" \
-      "$current_phase" \
-      "$decision" \
-      "$next_skill" \
-      "$reason_code" \
-      "$reason" \
-      "$requires_user_input"
-    return 0
-  fi
 
   if [[ -n "$resolved_ticket" ]]; then
     local maybe_phase

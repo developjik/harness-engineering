@@ -12,7 +12,7 @@
 - skill 간 handoff 지점
 - 어떤 skill이 어떤 artifact를 만들거나 갱신하는지
 - 어떤 skill이 어떤 state 필드를 읽고 쓰는지
-- 어떤 skill이 자동 실행 대상이고 어떤 skill이 utility 성격인지
+- 어떤 skill이 다음 단계 선택 대상이고 어떤 skill이 utility 성격인지
 
 ## 핵심 원칙
 
@@ -48,11 +48,17 @@
 - `list-tickets`
 - `switch-ticket`
 
+### 4. Maintenance Skill
+
+- `reviewing-skill-md`
+
+이 skill은 ticket workflow runtime에 직접 참여하지 않습니다. `SKILL.md` 품질 점검과 maintenance 용도이므로 아래 workflow matrix에서는 분리해서 봅니다.
+
 ## Responsibility Matrix
 
 | Skill | 역할 | 주요 입력 | 주요 출력 | 생성/갱신 Artifact | 주요 state 갱신 |
 |---|---|---|---|---|---|
-| `route-workflow` | 자연어 요청을 다음 skill로 라우팅 | `raw_request`, active ticket, ticket state | `route result JSON`, auto-execute target | 없음 | 없음 |
+| `route-workflow` | 자연어 요청을 다음 skill로 라우팅 | `raw_request`, active ticket, ticket state | `route result JSON`, selected next skill | 없음 | 없음 |
 | `start-jira-ticket` | 작업할 Jira ticket 선택 및 active ticket 결정 | 사용자 요청, Jira ticket 목록 | 선택된 ticket context | 없음 | `index.json.active_ticket`, 필요시 기본 ticket index |
 | `intake` | 상태 bootstrap과 기본 컨텍스트 정규화 | selected ticket, Jira/Confluence/Figma/codebase 기본 정보 | intake context | `intake.md` | ticket state 초기화, `artifacts.intake.*`, `phase=intake/branch-ready` |
 | `clarify` | 모호성 해소와 질문/가정 정리 | `intake.md`, 관련 context | clarified scope | `clarify.md` | `artifacts.clarify.*`, `approvals.clarify.*`, `phase=clarify-*` |
@@ -76,7 +82,7 @@
 - 자연어 요청의 public entry
 - `intent normalizer -> decision engine` 구조로 동작
 - 다음에 실행해야 할 skill 결정
-- 선택된 skill 자동 실행
+- 선택된 다음 skill 반환
 
 읽는 것:
 
@@ -88,6 +94,33 @@
 
 - 없음
 - 선택적으로 route log를 남길 수는 있어도 business state는 직접 갱신하지 않음
+
+현재 스캐폴드 기준:
+
+- `route-workflow`는 `next_skill`을 계산하지만 실제 invoke는 하지 않음
+- 실제 skill handoff는 상위 runner 또는 사용자의 다음 호출에 맡겨져 있음
+
+### `reviewing-skill-md`
+
+역할:
+
+- `SKILL.md` 자체를 검토하고 저위험 문제를 정리 또는 수정
+- workflow skill이 아니라 plugin maintenance skill로 동작
+
+읽는 것:
+
+- 대상 `SKILL.md`
+- 필요 시 같은 skill 디렉토리의 reference 파일
+
+쓰는 것:
+
+- 선택된 `SKILL.md`
+
+하지 않는 것:
+
+- ticket state 변경
+- workflow artifact 생성
+- active ticket 전환
 
 하지 않는 것:
 

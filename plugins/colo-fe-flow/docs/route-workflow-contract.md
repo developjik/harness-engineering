@@ -8,6 +8,19 @@
 
 `route-workflow`는 사용자 자연어 요청을 받아 현재 로컬 상태와 산출물을 읽고, 다음에 실행해야 할 skill을 자동으로 선택하는 public entry controller입니다.
 
+## 문서 해석 기준
+
+이 문서는 목표 계약과 현재 스캐폴드 동작을 함께 기록합니다.
+
+- 목표 계약:
+  `route-workflow`는 다음 skill을 선택하고, 상위 runner가 있으면 이어서 실행까지 연결할 수 있습니다.
+- 현재 스캐폴드:
+  `hooks/lib/routing.sh`는 `route result JSON`과 `next_skill`만 계산합니다.
+- 현재 스캐폴드:
+  실제 next skill invocation은 아직 연결되지 않았습니다.
+- 현재 스캐폴드:
+  필수 MCP 선언 검증은 `.mcp.json`, `hooks/lib/dependency-check.sh`, `scripts/validate.sh`가 맡고 있으며, routing 함수 자체는 dependency-check를 직접 호출하지 않습니다.
+
 ## 무엇을 하고 무엇을 하지 않나
 
 ### 하는 일
@@ -17,7 +30,7 @@
 - 요청 의도를 내부 action enum으로 정규화
 - `.state`와 `docs/specs/...`를 읽어 다음 단계를 판정
 - `route result JSON`을 생성
-- 판정 결과에 따라 다음 skill을 자동 실행
+- 판정 결과에 따라 다음 skill을 선택
 
 ### 하지 않는 일
 
@@ -38,7 +51,7 @@ raw user request
 -> decision engine
 -> route result JSON
 -> short human explanation
--> next skill auto-execute
+-> next skill selected
 ```
 
 ### 내부 컴포넌트 역할
@@ -124,7 +137,7 @@ raw user request
 - `resolved_action`
   decision engine이 읽는 내부 정규화 값
 - `next_skill`
-  실제로 자동 실행할 skill 이름
+  현재 상태에서 선택된 다음 skill 이름
 
 예:
 
@@ -182,7 +195,7 @@ raw user request
 - `decision`
   `execute | redirect | block`
 - `next_skill`
-  자동 실행할 skill
+  현재 선택된 다음 skill. 상위 runner가 있으면 이어서 실행 가능
 - `reason_code`
   고정 enum reason
 - `reason`
@@ -194,11 +207,11 @@ raw user request
 
 ### `execute`
 
-현재 상태와 요청이 맞으므로 해당 skill을 그대로 실행합니다.
+현재 상태와 요청이 맞으므로 해당 skill을 그대로 선택합니다.
 
 ### `redirect`
 
-요청은 이해했지만 현재 상태상 더 앞선 단계가 필요합니다. 요청 skill 대신 `required_next_skill`을 실행합니다.
+요청은 이해했지만 현재 상태상 더 앞선 단계가 필요합니다. 요청 skill 대신 `required_next_skill`을 선택합니다.
 
 ### `block`
 
@@ -232,7 +245,6 @@ raw user request
 
 ### 환경/입력 계열
 
-- `missing_required_mcp`
 - `unknown_action`
 - `no_ticket_context`
 - `ticket_switch_required`
@@ -333,12 +345,14 @@ raw user request
 
 | 조건 | decision | 동작 |
 |---|---|---|
-| `resolved_action`이 없더라도 `required_next_skill` 계산 가능 | `execute` | `required_next_skill` 자동 실행 |
-| `resolved_action`과 `required_next_skill`가 사실상 일치 | `execute` | 해당 skill 실행 |
-| 사용자가 더 뒤 단계를 요청했지만 현재는 앞 단계가 필요 | `redirect` | `required_next_skill` 실행 |
+| `resolved_action`이 없더라도 `required_next_skill` 계산 가능 | `execute` | `required_next_skill` 선택 결과 반환 |
+| `resolved_action`과 `required_next_skill`가 사실상 일치 | `execute` | 해당 skill 선택 결과 반환 |
+| 사용자가 더 뒤 단계를 요청했지만 현재는 앞 단계가 필요 | `redirect` | `required_next_skill` 선택 결과 반환 |
 | `show_ticket_status`, `list_tickets`, `switch_ticket` 같은 유틸리티 요청 | `execute` | 해당 utility skill 실행 |
 | 사용자 선택이 먼저 필요 | `block` | `requires_user_input=true` |
 | MCP 누락, 상태 파손, 복구 불가 오류 | `block` | `requires_user_input=false` |
+
+현재 스캐폴드에서는 위 표의 "실행"을 실제 invocation이 아니라 "선택 결과 반환"으로 읽어야 합니다. 실제 hook 또는 상위 runner에 의한 자동 handoff는 이후 단계 작업입니다.
 
 ## 단계별 해석 원칙
 

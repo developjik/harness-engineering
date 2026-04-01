@@ -4,8 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./lib/hook-runtime.sh
 source "$SCRIPT_DIR/lib/hook-runtime.sh"
-# shellcheck source=./lib/dependency-check.sh
-source "$SCRIPT_DIR/lib/dependency-check.sh"
 # shellcheck source=./lib/planning.sh
 source "$SCRIPT_DIR/lib/planning.sh"
 
@@ -15,11 +13,6 @@ TOOL_NAME="$(cff_hook_tool_name "$PAYLOAD")"
 FILE_PATH="$(cff_hook_tool_file_path "$PAYLOAD")"
 COMMAND="$(cff_hook_tool_command "$PAYLOAD")"
 ACTIVE_TICKET="$(cff_state_get_active_ticket "$PROJECT_ROOT")"
-
-if ! require_declared_mcp_servers "$PROJECT_ROOT" >/dev/null 2>&1; then
-  cff_hook_emit_block "missing required mcp servers"
-  exit 0
-fi
 
 if [[ -n "$ACTIVE_TICKET" && ! -f "$(cff_ticket_state_path "$PROJECT_ROOT" "$ACTIVE_TICKET")" ]]; then
   cff_hook_emit_block "active ticket state is missing"

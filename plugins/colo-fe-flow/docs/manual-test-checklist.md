@@ -17,7 +17,6 @@
 
 - Git 저장소 하나를 별도로 준비
 - `plugins/colo-fe-flow/`가 현재 워크스페이스에 존재
-- `.mcp.json`에 최소 `atlassian`, `figma` 선언 존재
 - 기존 `.colo-fe-flow/`가 없다면 더 좋음
 
 권장 테스트 ticket:
@@ -33,7 +32,7 @@
 2. `plugins/colo-fe-flow/scripts/validate.sh`
 기대 결과: 모든 `hooks/__tests__/*.test.sh` 통과 후 `colo-fe-flow scaffold validation passed`
 
-3. 테스트 저장소 루트에 `.mcp.json` 존재 확인
+3. 플러그인 루트 `plugins/colo-fe-flow/.mcp.json` 존재 확인
 기대 결과: `atlassian`, `figma`가 선언되어 있음
 
 ## 시나리오 1. Session Start 와 Hook 초기화
@@ -58,7 +57,7 @@ printf '{"cwd":"%s"}' "$(pwd)" | bash plugins/colo-fe-flow/hooks/session-start.s
 
 - `index.json`이 생성됨
 - `session.log`에 `SESSION_START`가 기록됨
-- 필수 MCP 선언이 없으면 hard fail이 아니라 session log에만 남고 종료됨
+- project root에 `.mcp.json`이 없어도 session-start는 계속 진행됨
 
 ## 시나리오 2. Ticket Bootstrap
 
@@ -100,6 +99,7 @@ cff_bootstrap_ticket "$(pwd)" "FE-123" "10001" "Checkout 페이지 개선" "http
 
 목적:
 - 현재 상태에 맞게 다음 skill이 계산되는지 확인
+- 현재 스캐폴드에서 helper가 JSON만 반환하고 실제 skill invocation은 하지 않는다는 점 확인
 
 절차:
 
@@ -117,6 +117,7 @@ cff_routing_route_result_json "$(pwd)" "이제 구현 들어가자"
 - `decision == "redirect"` 또는 현재 단계에 맞는 판정
 - `next_skill == "clarify"`
 - `reason_code == "missing_clarify"`
+- 실제 `clarify` skill이 자동 실행되지는 않음
 
 3. utility 요청도 확인
 
@@ -128,6 +129,7 @@ cff_routing_route_result_json "$(pwd)" "티켓 목록 보여줘"
 
 - `decision == "execute"`
 - `next_skill == "list-tickets"`
+- utility 선택 결과만 반환됨
 
 ## 시나리오 4. Planning Chain
 

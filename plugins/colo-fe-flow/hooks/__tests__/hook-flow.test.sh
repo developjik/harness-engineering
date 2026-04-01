@@ -17,15 +17,6 @@ fail() {
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
-cat > "$tmp_dir/.mcp.json" <<'JSON'
-{
-  "mcpServers": {
-    "atlassian": {},
-    "figma": {}
-  }
-}
-JSON
-
 printf '{"cwd":"%s"}' "$tmp_dir" | bash "$ROOT_DIR/hooks/session-start.sh" >/dev/null
 [[ -f "$tmp_dir/.colo-fe-flow/.state/index.json" ]] || fail "session-start should initialize index"
 grep -Fq "SESSION_START" "$tmp_dir/.colo-fe-flow/.log/session.log" || fail "session-start should log session start"

@@ -9,9 +9,41 @@ CFF_REQUIRED_MCP_SERVERS=(
   figma
 )
 
+cff_plugin_root() {
+  if [[ -n "${CLAUDE_PLUGIN_ROOT:-}" ]]; then
+    printf '%s\n' "$CLAUDE_PLUGIN_ROOT"
+    return 0
+  fi
+
+  printf '%s\n' "$(cd "$LIB_DIR/../.." && pwd)"
+}
+
+cff_mcp_config_path() {
+  local project_root="$1"
+  local project_mcp_path="$project_root/.mcp.json"
+  local plugin_root
+  local plugin_mcp_path
+
+  if [[ -f "$project_mcp_path" ]]; then
+    printf '%s\n' "$project_mcp_path"
+    return 0
+  fi
+
+  plugin_root="$(cff_plugin_root)"
+  plugin_mcp_path="$plugin_root/.mcp.json"
+  if [[ -f "$plugin_mcp_path" ]]; then
+    printf '%s\n' "$plugin_mcp_path"
+    return 0
+  fi
+
+  printf '%s\n' "$project_mcp_path"
+}
+
 cff_declared_mcp_servers() {
   local project_root="$1"
-  local mcp_path="$project_root/.mcp.json"
+  local mcp_path
+
+  mcp_path="$(cff_mcp_config_path "$project_root")"
 
   python3 - "$mcp_path" <<'PY'
 import json
@@ -50,4 +82,3 @@ require_declared_mcp_servers() {
 
   return 0
 }
-
